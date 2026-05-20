@@ -1,0 +1,204 @@
+CREATE DATABASE steam_demo;
+USE steam_demo;
+
+-- =========================
+-- TABLA: usuario
+-- =========================
+CREATE TABLE usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+
+    saldo DECIMAL(10,2) DEFAULT 0,
+
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================
+-- TABLA: desarrollador
+-- EXTENSION DE USUARIO
+-- =========================
+CREATE TABLE desarrollador (
+    id_desarrollador INT AUTO_INCREMENT PRIMARY KEY,
+
+    usuario_id INT NOT NULL UNIQUE,
+
+    nombre_estudio VARCHAR(150) NOT NULL,
+
+    codigo_fiscal VARCHAR(50),
+
+    descripcion TEXT,
+
+    fondos DECIMAL(10,2) DEFAULT 0,
+
+    sitio_web VARCHAR(255),
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE
+);
+
+-- =========================
+-- TABLA: juego
+-- =========================
+CREATE TABLE juego (
+    id_juego INT AUTO_INCREMENT PRIMARY KEY,
+
+    nombre VARCHAR(150) NOT NULL,
+
+    descripcion TEXT,
+
+    genero VARCHAR(50),
+
+    precio DECIMAL(10,2) NOT NULL,
+
+    fecha_lanzamiento DATE,
+
+    imagen_url VARCHAR(255),
+
+    desarrollador_id INT,
+
+    FOREIGN KEY (desarrollador_id)
+        REFERENCES desarrollador(id_desarrollador)
+        ON DELETE SET NULL
+);
+
+-- =========================
+-- TABLA: compra
+-- =========================
+CREATE TABLE compra (
+    id_compra INT AUTO_INCREMENT PRIMARY KEY,
+
+    usuario_id INT NOT NULL,
+
+    total DECIMAL(10,2) NOT NULL,
+
+    metodo_pago VARCHAR(50),
+
+    fecha_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE
+);
+
+-- =========================
+-- TABLA: compra_detalle
+-- =========================
+CREATE TABLE compra_detalle (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+
+    compra_id INT NOT NULL,
+
+    juego_id INT NOT NULL,
+
+    precio DECIMAL(10,2) NOT NULL,
+
+    FOREIGN KEY (compra_id)
+        REFERENCES compra(id_compra)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (juego_id)
+        REFERENCES juego(id_juego)
+        ON DELETE CASCADE
+);
+
+-- =========================
+-- TABLA: biblioteca
+-- =========================
+CREATE TABLE biblioteca (
+    id_biblioteca INT AUTO_INCREMENT PRIMARY KEY,
+
+    usuario_id INT NOT NULL,
+
+    juego_id INT NOT NULL,
+
+    horas_jugadas DECIMAL(10,1) DEFAULT 0,
+
+    instalado BOOLEAN DEFAULT FALSE,
+
+    favorito BOOLEAN DEFAULT FALSE,
+
+    fecha_adquisicion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (juego_id)
+        REFERENCES juego(id_juego)
+        ON DELETE CASCADE,
+
+    UNIQUE(usuario_id, juego_id)
+);
+
+-- =========================
+-- TABLA: wishlist
+-- =========================
+CREATE TABLE wishlist (
+    id_wishlist INT AUTO_INCREMENT PRIMARY KEY,
+
+    usuario_id INT NOT NULL,
+
+    juego_id INT NOT NULL,
+
+    fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (juego_id)
+        REFERENCES juego(id_juego)
+        ON DELETE CASCADE,
+
+    UNIQUE(usuario_id, juego_id)
+);
+
+-- =========================
+-- TABLA: review
+-- =========================
+CREATE TABLE review (
+    id_review INT AUTO_INCREMENT PRIMARY KEY,
+
+    usuario_id INT NOT NULL,
+
+    juego_id INT NOT NULL,
+
+    puntuacion INT NOT NULL CHECK (puntuacion BETWEEN 1 AND 5),
+
+    comentario TEXT,
+
+    fecha_review TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (juego_id)
+        REFERENCES juego(id_juego)
+        ON DELETE CASCADE
+);
+
+-- =========================
+-- TABLA: movimiento
+-- =========================
+CREATE TABLE movimiento (
+    id_movimiento INT AUTO_INCREMENT PRIMARY KEY,
+
+    usuario_id INT NOT NULL,
+
+    tipo ENUM('INGRESO', 'EGRESO') NOT NULL,
+
+    monto DECIMAL(10,2) NOT NULL,
+
+    descripcion VARCHAR(255),
+
+    fecha_movimiento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE
+);
