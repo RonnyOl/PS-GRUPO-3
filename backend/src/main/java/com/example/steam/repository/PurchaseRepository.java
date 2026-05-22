@@ -9,5 +9,4 @@ import java.time.LocalDate;
 
 @Repository
 public interface PurchaseRepository extends JpaRepository<Compra, Integer> {
-    Compra findByUsuarioAndFechaCompra(Usuario user, LocalDate fecha);
 }

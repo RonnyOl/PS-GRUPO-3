@@ -19,9 +19,9 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
     }
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<ResponseBuyDTO> buyGame(@RequestBody RequestBuyDTO requestBuyDTO) {
-        ResponseBuyDTO response = purchaseService.buyGame(requestBuyDTO);
+        ResponseBuyDTO response = purchaseService.purchaseGame(requestBuyDTO);
         return ResponseEntity.ok(response);
     }
 }

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<Usuario, Integer> {
-    Optional<Usuario> findByUsername(String username);
+    Optional<Usuario> findByNombre(String username);
 
     @Modifying
     @Query("UPDATE Usuario u SET u.saldo = u.saldo + :monto WHERE u.idUsuario = :idUsuario")
