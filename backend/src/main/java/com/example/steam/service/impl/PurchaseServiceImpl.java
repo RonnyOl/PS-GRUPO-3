@@ -52,11 +52,11 @@ public class PurchaseServiceImpl implements PurchaseServiceInterface {
     @Transactional
     public ResponseBuyDTO purchaseGame(RequestBuyDTO requestBuyDTO) {
 
-        Usuario user = userService.getUsuarioByUsername(requestBuyDTO.user());
+        User user = userService.getUserByName(requestBuyDTO.user());
 
         var uniqueGameIds = requestBuyDTO.gamesIds().stream().distinct().toList();
 
-        List<Juego> targetGames = gameService.getGames(uniqueGameIds);
+        List<Game> targetGames = gameService.getGames(uniqueGameIds);
 
         processPurchase(requestBuyDTO, user);
 
@@ -66,66 +66,66 @@ public class PurchaseServiceImpl implements PurchaseServiceInterface {
             throw new RuntimeException(e);
         }
 
-        if(!validateAmountBalance(user.getSaldo(), requestBuyDTO.totalPrice())){
+        if(!validateAmountBalance(user.getBalance(), requestBuyDTO.totalPrice())){
             throw new RuntimeException("Saldo insuficiente para realizar la compra.");
         }
 
-        Compra savedPurchase = createPurchase(user, BigDecimal.valueOf(requestBuyDTO.totalPrice()));
+        Purchase savedPurchase = createPurchase(user, BigDecimal.valueOf(requestBuyDTO.totalPrice()));
         purchaseRepository.save(savedPurchase);
         
-        List<CompraDetalle> purchaseDetail = createPurchaseDetail(targetGames, savedPurchase);
+        List<PurchaseDetails> purchaseDetail = createPurchaseDetail(targetGames, savedPurchase);
         purchaseDetailRepository.saveAll(purchaseDetail);
 
-        List<Biblioteca> gamesToAdd = getGamesToAdd(targetGames, user);
+        List<Library> gamesToAdd = getGamesToAdd(targetGames, user);
         libraryRepository.saveAll(gamesToAdd);
 
 
-        Movimiento movement = createPurchaseMovement(requestBuyDTO, user, savedPurchase);
+        Transaction movement = createPurchaseMovement(requestBuyDTO, user, savedPurchase);
         movementService.createTransaction(movement);
 
-        int updatedUsers = userRepository.updateSaldo(user.getIdUsuario(), BigDecimal.valueOf(requestBuyDTO.totalPrice()).negate());
+        int updatedUsers = userRepository.updateBalance(user.getIdUser(), BigDecimal.valueOf(requestBuyDTO.totalPrice()).negate());
 
         if(updatedUsers==0){
             throw new RuntimeException("Error al actualizar el saldo del usuario. La compra no se ha realizado.");
         }
 
-        Map <Desarrollador, BigDecimal> earningsByDev = getEarningsByDev(targetGames);
+        Map <Developer, BigDecimal> earningsByDev = getEarningsByDev(targetGames);
 
         sendEarningsToDev(earningsByDev);
 
-        BigDecimal remainingBalance = user.getSaldo().subtract(BigDecimal.valueOf(requestBuyDTO.totalPrice()));
+        BigDecimal remainingBalance = user.getBalance().subtract(BigDecimal.valueOf(requestBuyDTO.totalPrice()));
 
-        return new ResponseBuyDTO(savedPurchase.getIdCompra().toString(),
-                                    savedPurchase.getFechaCompra(),
+        return new ResponseBuyDTO(savedPurchase.getIdPurchase().toString(),
+                                    savedPurchase.getPurchaseDate(),
                                     remainingBalance.doubleValue(),
                                     requestBuyDTO.totalPrice(),
-                                    gamesToAdd.stream().map(entry -> entry.getJuego().getNombre()).toList());
+                                    gamesToAdd.stream().map(entry -> entry.getGame().getName()).toList());
     }
 
-    private void sendEarningsToDev(Map<Desarrollador, BigDecimal> earningsByDev) {
+    private void sendEarningsToDev(Map<Developer, BigDecimal> earningsByDev) {
         earningsByDev.forEach((developer, payout) -> {
-            int updatedDevs = developerRepository.updateFunds(developer.getIdDesarrollador(), payout);
+            int updatedDevs = developerRepository.updateFunds(developer.getIdDeveloper(), payout);
             if (updatedDevs == 0) {
-                throw new RuntimeException("Error al actualizar los fondos del desarrollador " + developer.getNombreEstudio() + ". La compra no se ha realizado.");
+                throw new RuntimeException("Error al actualizar los fondos del desarrollador " + developer.getStudioName() + ". La compra no se ha realizado.");
             }
         });
     }
 
     @NonNull
-    private static Map<Desarrollador, BigDecimal> getEarningsByDev(List<Juego> targetGames) {
+    private static Map<Developer, BigDecimal> getEarningsByDev(List<Game> targetGames) {
         return targetGames.stream()
-                .collect(Collectors.groupingBy(Juego::getDesarrollador,
-                        Collectors.mapping(Juego::getPrecio, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
+                .collect(Collectors.groupingBy(Game::getDeveloper,
+                        Collectors.mapping(Game::getPrice, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
     }
 
-    private Movimiento createPurchaseMovement(RequestBuyDTO requestBuyDTO, Usuario user, Compra savedPurchase) {
-        Movimiento movement = new Movimiento();
-        movement.setUsuario(user);
+    private Transaction createPurchaseMovement(RequestBuyDTO requestBuyDTO, User user, Purchase savedPurchase) {
+        Transaction movement = new Transaction();
+        movement.setUser(user);
         BigDecimal negate = BigDecimal.valueOf(requestBuyDTO.totalPrice()).negate();
-        movement.setMonto(negate);
-        movement.setDescripcion("Compra de juegos. Orden ID: " + savedPurchase.getIdCompra());
-        movement.setFechaMovimiento(LocalDateTime.now());
-        movement.setTipo(TipoMovimiento.EGRESO);
+        movement.setAmount(negate);
+        movement.setDescription("Compra de juegos. Orden ID: " + savedPurchase.getIdPurchase());
+        movement.setTransactionDate(LocalDateTime.now());
+        movement.setType(TransactionType.WITHDRAWAL);
         return movement;
     }
 
@@ -134,42 +134,42 @@ public class PurchaseServiceImpl implements PurchaseServiceInterface {
     }
 
     @NonNull
-    private Compra createPurchase(Usuario buyer, BigDecimal totalAmount){
-        Compra purchase = new Compra();
+    private Purchase createPurchase(User buyer, BigDecimal totalAmount){
+        Purchase purchase = new Purchase();
         purchase.setTotal(totalAmount);
-        purchase.setUsuario(buyer);
-        purchase.setFechaCompra(LocalDateTime.now());
-        purchase.setMetodoPago("Saldo en cuenta");
+        purchase.setUser(buyer);
+        purchase.setPurchaseDate(LocalDateTime.now());
+        purchase.setPaymentMethod("Saldo en cuenta");
 
         return purchase;
     }
 
     @NonNull
-    private List<CompraDetalle> createPurchaseDetail(List<Juego> targetGames, Compra savedPurchase){
+    private List<PurchaseDetails> createPurchaseDetail(List<Game> targetGames, Purchase savedPurchase){
         return targetGames.stream().map(game -> {
-            CompraDetalle detail = new CompraDetalle();
-            detail.setCompra(savedPurchase);
-            detail.setJuego(game);
-            detail.setPrecio(game.getPrecio());
+            PurchaseDetails detail = new PurchaseDetails();
+            detail.setPurchase(savedPurchase);
+            detail.setGame(game);
+            detail.setPrice(game.getPrice());
             return detail;
         }).toList();
     }
     
     @NonNull
-    private static List<Biblioteca> getGamesToAdd(List<Juego> targetGames, Usuario user) {
+    private static List<Library> getGamesToAdd(List<Game> targetGames, User user) {
         return targetGames.stream().map(game -> {
-            Biblioteca libraryEntry = new Biblioteca();
-            libraryEntry.setUsuario(user);
-            libraryEntry.setJuego(game);
-            libraryEntry.setFechaAdquisicion(LocalDateTime.now());
+            Library libraryEntry = new Library();
+            libraryEntry.setUser(user);
+            libraryEntry.setGame(game);
+            libraryEntry.setAcquisitionDate(LocalDateTime.now());
             return libraryEntry;
         }).toList();
     }
     @Transactional
-    public void processPurchase(RequestBuyDTO request, Usuario user) {
+    public void processPurchase(RequestBuyDTO request, User user) {
         var cartGameIds = request.gamesIds().stream().distinct().toList();
 
-        List<Integer> alreadyOwnedIds = libraryService.findOwnedGamesInSelection(user.getIdUsuario(), cartGameIds);
+        List<Integer> alreadyOwnedIds = libraryService.findOwnedGamesInSelection(user.getIdUser(), cartGameIds);
 
         if (!alreadyOwnedIds.isEmpty()) {
             var duplicateTitles = gameService.getTitlesByIds(alreadyOwnedIds);

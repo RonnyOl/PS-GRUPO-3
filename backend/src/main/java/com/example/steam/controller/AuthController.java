@@ -3,16 +3,17 @@ package com.example.steam.controller;
 import com.example.steam.dto.AuthResponse;
 import com.example.steam.dto.LoginRequest;
 import com.example.steam.dto.RegisterRequest;
-import com.example.steam.service.AuthService;
+import com.example.steam.service.AuthServiceInterface;
+import com.example.steam.service.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthServiceInterface authService;
 
     @PostMapping("/register")
     public AuthResponse register(

@@ -1,5 +1,6 @@
-package com.example.steam.service;
+package com.example.steam.service.impl;
 
+import com.example.steam.service.JwtServiceInterface;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +10,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Service
-public class JwtService {
+public class JwtServiceImpl implements JwtServiceInterface {
 
     @Value("${jwt.secret}")
     private String secret;

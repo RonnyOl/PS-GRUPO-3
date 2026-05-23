@@ -1,6 +1,6 @@
 package com.example.steam.service.impl;
 
-import com.example.steam.model.Juego;
+import com.example.steam.model.Game;
 import com.example.steam.model.dto.ResponseGameDto;
 import com.example.steam.repository.GameRepository;
 import com.example.steam.service.GameServiceInterface;
@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class GameServiceImpl implements GameServiceInterface {
@@ -25,61 +23,61 @@ public class GameServiceImpl implements GameServiceInterface {
     @Override
     public ResponseGameDto getGameToApi(Integer gameId) {
 
-        Juego game = gameRepository.findById(gameId).orElse(null);
+        Game game = gameRepository.findById(gameId).orElse(null);
         if (game == null) {
             throw new RuntimeException("El juego con ID " + gameId + " no existe.");
         }
 
         return new ResponseGameDto(
-                game.getIdJuego().toString(),
-                game.getNombre(),
-                game.getDescripcion(),
-                game.getPrecio().doubleValue(),
-                game.getGenero(),
-                game.getDesarrollador().getNombreEstudio()
+                game.getIdGame().toString(),
+                game.getName(),
+                game.getDescription(),
+                game.getPrice().doubleValue(),
+                game.getGenre(),
+                game.getDeveloper().getStudioName()
         );
     }
 
     @Override
     public List<ResponseGameDto> getGamesToApi(List<Integer> gamesIds) {
-        List<Juego> games = gameRepository.findAllByIdJuegoIn(gamesIds);
+        List<Game> games = gameRepository.findAllByIdGameIn(gamesIds);
 
         return games.stream().map(game -> new ResponseGameDto(
-                game.getIdJuego().toString(),
-                game.getNombre(),
-                game.getDescripcion(),
-                game.getPrecio().doubleValue(),
-                game.getGenero(),
-                game.getDesarrollador().getNombreEstudio()
+                game.getIdGame().toString(),
+                game.getName(),
+                game.getDescription(),
+                game.getPrice().doubleValue(),
+                game.getGenre(),
+                game.getDeveloper().getStudioName()
         )).toList();
     }
 
     @Override
     public List<ResponseGameDto> getAllGamesToApi() {
-        List<Juego> games = gameRepository.findAll();
+        List<Game> games = gameRepository.findAll();
 
         return games.stream().map(game -> new ResponseGameDto(
-                game.getIdJuego().toString(),
-                game.getNombre(),
-                game.getDescripcion(),
-                game.getPrecio().doubleValue(),
-                game.getGenero(),
-                game.getDesarrollador().getNombreEstudio()
+                game.getIdGame().toString(),
+                game.getName(),
+                game.getDescription(),
+                game.getPrice().doubleValue(),
+                game.getGenre(),
+                game.getDeveloper().getStudioName()
         )).toList();
     }
 
     @Override
-    public Juego getGame(Integer gameId) {
+    public Game getGame(Integer gameId) {
         return gameRepository.findById(gameId).orElse(null);
     }
 
     @Override
-    public List<Juego> getGames(List<Integer> gamesIds) {
-        return gameRepository.findAllByIdJuegoIn(gamesIds);
+    public List<Game> getGames(List<Integer> gamesIds) {
+        return gameRepository.findAllByIdGameIn(gamesIds);
     }
 
     @Override
-    public List<Juego> getAllGames() {
+    public List<Game> getAllGames() {
         return gameRepository.findAll();
     }
 
@@ -89,7 +87,7 @@ public class GameServiceImpl implements GameServiceInterface {
         if (gameIds == null || gameIds.isEmpty()) {
             return List.of();
         }
-        List<String> titles = gameRepository.findNombresByIdsIn(gameIds);
+        List<String> titles = gameRepository.findNamesByIdsIn(gameIds);
         return List.copyOf(titles);
     }
 
@@ -101,12 +99,12 @@ public class GameServiceImpl implements GameServiceInterface {
 
         Set<Integer> uniqueIdsToValidate = Set.copyOf(gamesIds);
 
-        List<Juego> existingGames = gameRepository.findAllByIdJuegoIn(List.copyOf(uniqueIdsToValidate));
+        List<Game> existingGames = gameRepository.findAllByIdGameIn(List.copyOf(uniqueIdsToValidate));
 
         if (existingGames.size() != uniqueIdsToValidate.size()) {
 
             Set<Integer> existingIds = existingGames.stream()
-                    .map(Juego::getIdJuego)
+                    .map(Game::getIdGame)
                     .collect(Collectors.toSet());
 
             List<Integer> missingIds = uniqueIdsToValidate.stream()

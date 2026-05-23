@@ -1,16 +1,16 @@
 package com.example.steam.service;
 
-import com.example.steam.model.Juego;
+import com.example.steam.model.Game;
 import com.example.steam.model.dto.ResponseGameDto;
 
 import java.util.List;
 
 public interface GameServiceInterface {
 
-     Juego getGame(Integer gameId);
+     Game getGame(Integer gameId);
      void validateGamesExists(List<Integer> gamesIds);
-     List<Juego> getGames(List<Integer> gamesIds);
-     List<Juego> getAllGames();
+     List<Game> getGames(List<Integer> gamesIds);
+     List<Game> getAllGames();
      List<String> getTitlesByIds(List<Integer> gameIds);
 
      ResponseGameDto getGameToApi(Integer gameId);

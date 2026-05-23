@@ -1,6 +1,6 @@
 package com.example.steam.repository;
 
-import com.example.steam.model.Desarrollador;
+import com.example.steam.model.Developer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,11 +8,11 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 
-public interface DeveloperRepository extends JpaRepository<Desarrollador, Integer> {
+public interface DeveloperRepository extends JpaRepository<Developer, Integer> {
     @Modifying
-    @Query("UPDATE Desarrollador d SET d.fondos = d.fondos + :monto WHERE d.idDesarrollador = :idDesarrollador")
+    @Query("UPDATE Developer d SET d.funds = d.funds + :amount WHERE d.idDeveloper = :idDeveloper")
     int updateFunds(
-            @Param("idDesarrollador") Integer idDesarrollador,
-            @Param("monto") BigDecimal monto
+            @Param("idDeveloper") Integer idDeveloper,
+            @Param("amount") BigDecimal amount
     );
 }

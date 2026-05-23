@@ -1,6 +1,6 @@
 package com.example.steam.repository;
 
-import com.example.steam.model.Usuario;
+import com.example.steam.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,11 +10,11 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<Usuario, Integer> {
-    Optional<Usuario> findByNombre(String username);
-    Optional<Usuario> findByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Integer> {
+    Optional<User> findByName(String username);
+    Optional<User> findByEmail(String email);
     @Modifying
-    @Query("UPDATE Usuario u SET u.saldo = u.saldo + :monto WHERE u.idUsuario = :idUsuario")
-    int updateSaldo(@Param("idUsuario") Integer idUsuario, @Param("monto") BigDecimal monto);
+    @Query("UPDATE User u SET u.balance = u.balance + :amount WHERE u.idUser = :idUser")
+    int updateBalance(@Param("idUser") Integer idUser, @Param("amount") BigDecimal monto);
 
 }
