@@ -1,12 +1,9 @@
 package com.example.steam.repository;
 
-import com.example.steam.model.Compra;
-import com.example.steam.model.Usuario;
+import com.example.steam.model.Purchase;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-
 @Repository
-public interface PurchaseRepository extends JpaRepository<Compra, Integer> {
+public interface PurchaseRepository extends JpaRepository<Purchase, Integer> {
 }

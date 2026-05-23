@@ -1,7 +1,7 @@
 package com.example.steam.service;
 
-import com.example.steam.model.Movimiento;
+import com.example.steam.model.Transaction;
 
 public interface MovementServiceInterface {
-    Movimiento createTransaction(Movimiento movement);
+    Transaction createTransaction(Transaction movement);
 }

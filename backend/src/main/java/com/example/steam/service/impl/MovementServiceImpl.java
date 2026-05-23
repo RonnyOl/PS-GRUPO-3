@@ -1,6 +1,6 @@
 package com.example.steam.service.impl;
 
-import com.example.steam.model.Movimiento;
+import com.example.steam.model.Transaction;
 import com.example.steam.repository.MovementRepository;
 import com.example.steam.service.MovementServiceInterface;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class MovementServiceImpl implements MovementServiceInterface {
     }
 
     @Override
-    public Movimiento createTransaction(Movimiento movement) {
+    public Transaction createTransaction(Transaction movement) {
 
         return movementRepository.save(movement);
 

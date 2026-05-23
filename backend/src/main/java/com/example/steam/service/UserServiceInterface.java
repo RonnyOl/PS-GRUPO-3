@@ -1,8 +1,8 @@
 package com.example.steam.service;
 
-import com.example.steam.model.Usuario;
+import com.example.steam.model.User;
 
 public interface UserServiceInterface {
-    Usuario getUsuarioByUsername(String name);
+    User getUserByName(String name);
 
 }

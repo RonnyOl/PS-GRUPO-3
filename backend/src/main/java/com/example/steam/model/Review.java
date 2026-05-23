@@ -20,19 +20,18 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "juego_id", nullable = false)
-    private Juego juego;
+    private Game game;
 
-    // Validación del CHECK (BETWEEN 1 AND 5) a nivel de código
     @Column(nullable = false)
-    private Integer puntuacion;
+    private Integer score;
 
     @Column(columnDefinition = "TEXT")
-    private String comentario;
+    private String comment;
 
-    @Column(name = "fecha_review", insertable = false, updatable = false)
-    private LocalDateTime fechaReview;
+    @Column(name = "review_date", insertable = false, updatable = false)
+    private LocalDateTime reviewDate;
 }

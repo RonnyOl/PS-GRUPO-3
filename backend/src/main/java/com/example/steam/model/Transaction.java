@@ -6,33 +6,33 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "movimiento")
+@Table(name = "transaction")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Movimiento {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_movimiento")
-    private Integer idMovimiento;
+    @Column(name = "id_transaction")
+    private Integer idTransaction;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TipoMovimiento tipo;
+    private TransactionType type;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal monto;
+    private BigDecimal amount;
 
     @Column(length = 255)
-    private String descripcion;
+    private String description;
 
-    @Column(name = "fecha_movimiento", insertable = false, updatable = false)
-    private LocalDateTime fechaMovimiento;
+    @Column(name = "transaction_date", insertable = false, updatable = false)
+    private LocalDateTime transactionDate;
 }

@@ -6,38 +6,42 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "juego")
+@Table(name = "game")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Juego {
+public class Game {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_juego")
-    private Integer idJuego;
+    @Column(name = "id_game")
+    private Integer idGame;
 
     @Column(nullable = false, length = 150)
-    private String nombre;
+    private String name;
 
     @Column(columnDefinition = "TEXT")
-    private String descripcion;
+    private String description;
 
     @Column(length = 50)
-    private String genero;
+    private String genre;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal precio;
+    private BigDecimal price;
 
-    @Column(name = "fecha_lanzamiento")
-    private LocalDate fechaLanzamiento;
+    @Column(name = "relase_date")
+    private LocalDate relaseDate;
 
-    @Column(name = "imagen_url", length = 255)
-    private String imagenUrl;
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "desarrollador_id")
-    private Desarrollador desarrollador;
+    @JoinColumn(name = "developer_id")
+    private Developer developer;
+
+    public Number getPre() {
+        return null;
+    }
 }
