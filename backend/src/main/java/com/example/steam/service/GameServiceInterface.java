@@ -1,5 +1,7 @@
 package com.example.steam.service;
 
+import com.example.steam.dto.GameResponse;
+import com.example.steam.dto.PublishGameRequest;
 import com.example.steam.model.Game;
 import com.example.steam.model.dto.ResponseGameDto;
 
@@ -16,4 +18,6 @@ public interface GameServiceInterface {
      ResponseGameDto getGameToApi(Integer gameId);
      List<ResponseGameDto> getGamesToApi(List<Integer> gamesIds);
      List<ResponseGameDto> getAllGamesToApi();
+
+     GameResponse publishGame(PublishGameRequest request);
 }
