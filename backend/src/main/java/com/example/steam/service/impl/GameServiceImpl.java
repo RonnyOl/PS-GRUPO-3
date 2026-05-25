@@ -1,9 +1,14 @@
 package com.example.steam.service.impl;
 
+import com.example.steam.dto.GameResponse;
+import com.example.steam.dto.PublishGameRequest;
+import com.example.steam.model.Developer;
 import com.example.steam.model.Game;
 import com.example.steam.model.dto.ResponseGameDto;
+import com.example.steam.repository.DeveloperRepository;
 import com.example.steam.repository.GameRepository;
 import com.example.steam.service.GameServiceInterface;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +20,15 @@ import java.util.stream.Collectors;
 public class GameServiceImpl implements GameServiceInterface {
 
     private final GameRepository gameRepository;
+    private final DeveloperRepository developerRepository;
 
-    public GameServiceImpl(GameRepository gameRepository) {
+    public GameServiceImpl(GameRepository gameRepository, DeveloperRepository developerRepository) {
         this.gameRepository = gameRepository;
+        this.developerRepository = developerRepository;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseGameDto getGameToApi(Integer gameId) {
 
         Game game = gameRepository.findById(gameId).orElse(null);
@@ -40,6 +48,7 @@ public class GameServiceImpl implements GameServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResponseGameDto> getGamesToApi(List<Integer> gamesIds) {
         List<Game> games = gameRepository.findAllByIdGameIn(gamesIds);
 
@@ -55,6 +64,7 @@ public class GameServiceImpl implements GameServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResponseGameDto> getAllGamesToApi() {
         List<Game> games = gameRepository.findAll();
 
@@ -67,6 +77,38 @@ public class GameServiceImpl implements GameServiceInterface {
                 game.getDeveloper().getStudioName(),
                 game.getImageUrl()
         )).toList();
+    }
+
+    @Override
+    @Transactional
+    public GameResponse publishGame(PublishGameRequest request) {
+        // TODO: En una implementación futura, el ID del desarrollador no debería venir en el request.
+        // Deberíamos obtener el usuario autenticado desde el SecurityContextHolder.
+
+        // 1. Validar que el desarrollador existe
+        Developer developer = developerRepository.findById(request.getDeveloperId())
+                .orElseThrow(() -> new EntityNotFoundException("Desarrollador no encontrado con ID: " + request.getDeveloperId()));
+
+        // 2. Crear la entidad Game a partir del DTO
+        Game game = Game.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .genre(request.getGenre())
+                .price(request.getPrice())
+                .imageUrl(request.getImageUrl())
+                .relaseDate(request.getReleaseDate())
+                .developer(developer)
+                .build();
+
+        // 3. Guardar el juego en la base de datos
+        Game savedGame = gameRepository.save(game);
+
+        // 4. Mapear la entidad guardada al DTO de respuesta
+        return new GameResponse(
+                Long.valueOf(savedGame.getIdGame()),
+                savedGame.getName(), savedGame.getDescription(),
+                savedGame.getGenre(), savedGame.getPrice(), savedGame.getImageUrl(),
+                savedGame.getRelaseDate(), savedGame.getDeveloper().getStudioName());
     }
 
     @Override
