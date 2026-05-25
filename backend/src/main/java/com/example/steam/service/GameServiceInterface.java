@@ -3,6 +3,7 @@ package com.example.steam.service;
 import com.example.steam.dto.GameResponse;
 import com.example.steam.dto.PublishGameRequest;
 import com.example.steam.model.Game;
+import com.example.steam.model.User;
 import com.example.steam.model.dto.ResponseGameDto;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface GameServiceInterface {
      List<ResponseGameDto> getGamesToApi(List<Integer> gamesIds);
      List<ResponseGameDto> getAllGamesToApi();
 
-     GameResponse publishGame(PublishGameRequest request);
+     GameResponse publishGame(PublishGameRequest request, User currentUser);
 }

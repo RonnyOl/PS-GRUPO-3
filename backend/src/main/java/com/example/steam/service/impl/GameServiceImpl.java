@@ -5,11 +5,12 @@ import com.example.steam.dto.PublishGameRequest;
 import com.example.steam.model.Category;
 import com.example.steam.model.Developer;
 import com.example.steam.model.Game;
+import com.example.steam.model.User;
 import com.example.steam.model.dto.ResponseGameDto;
+import com.example.steam.repository.CategoryRepository;
 import com.example.steam.repository.DeveloperRepository;
 import com.example.steam.repository.GameRepository;
 import com.example.steam.service.GameServiceInterface;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +24,12 @@ public class GameServiceImpl implements GameServiceInterface {
 
     private final GameRepository gameRepository;
     private final DeveloperRepository developerRepository;
+    private final CategoryRepository categoryRepository;
 
-    public GameServiceImpl(GameRepository gameRepository, DeveloperRepository developerRepository) {
+    public GameServiceImpl(GameRepository gameRepository, DeveloperRepository developerRepository, CategoryRepository categoryRepository) {
         this.gameRepository = gameRepository;
         this.developerRepository = developerRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -92,22 +95,24 @@ public class GameServiceImpl implements GameServiceInterface {
 
     @Override
     @Transactional
-    public GameResponse publishGame(PublishGameRequest request) {
-        // TODO: En una implementación futura, el ID del desarrollador no debería venir en el request.
-        // Deberíamos obtener el usuario autenticado desde el SecurityContextHolder.
+    public GameResponse publishGame(PublishGameRequest request, User currentUser) {
 
-        // 1. Validar que el desarrollador existe
-        Developer developer = developerRepository.findById(request.getDeveloperId())
-                .orElseThrow(() -> new EntityNotFoundException("Desarrollador no encontrado con ID: " + request.getDeveloperId()));
+        Developer developer = currentUser.getDeveloper();
 
+        if (developer == null) {
+            throw new RuntimeException("El usuario no es un desarrollador registrado.");
+        }
+
+        List<Category> categories = categoryRepository.findAllById(request.getCategoryIds());
         // 2. Crear la entidad Game a partir del DTO
         Game game = Game.builder()
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
                 .imageUrl(request.getImageUrl())
-                .relaseDate(request.getReleaseDate())
+                .releaseDate(request.getReleaseDate())
                 .developer(developer)
+                .categories(categories)
                 .build();
 
         // 3. Guardar el juego en la base de datos
@@ -116,9 +121,9 @@ public class GameServiceImpl implements GameServiceInterface {
         // 4. Mapear la entidad guardada al DTO de respuesta
         return new GameResponse(
                 Long.valueOf(savedGame.getIdGame()),
-                savedGame.getName(), savedGame.getDescription(),
+                savedGame.getName(),
                 Collections.singletonList(savedGame.getCategories().toString()), savedGame.getPrice(), savedGame.getImageUrl(),
-                savedGame.getRelaseDate(), savedGame.getDeveloper().getStudioName());
+                savedGame.getReleaseDate(), savedGame.getDeveloper().getStudioName());
     }
 
     @Override

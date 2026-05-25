@@ -32,6 +32,9 @@ public class User implements UserDetails {
     private String email;
 
     @Column(nullable = false)
+    private String role;
+
+    @Column(nullable = false)
     private String password;
 
     @Column(precision = 10, scale = 2)
@@ -51,14 +54,15 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         return List.of(
-                new SimpleGrantedAuthority("ROLE_USER")
+                new SimpleGrantedAuthority(role)
         );
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return name;
     }
 
     @Override

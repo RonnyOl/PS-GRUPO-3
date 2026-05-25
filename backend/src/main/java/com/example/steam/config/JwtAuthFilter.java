@@ -44,34 +44,43 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        if (token != null) {
+        try {
 
-            String email = jwtService.extractEmail(token);
+            if (token != null) {
 
-            if (email != null &&
-                    SecurityContextHolder.getContext().getAuthentication() == null) {
+                String email = jwtService.extractEmail(token);
 
-                User user =
-                        userService.loadUserByEmail(email);
+                if (
+                        email != null &&
+                                SecurityContextHolder.getContext().getAuthentication() == null
+                ) {
 
-                if (jwtService.isTokenValid(token, user)) {
+                    User user = userService.loadUserByEmail(email);
 
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    user,
-                                    null,
-                                    user.getAuthorities()
-                            );
+                    if (jwtService.isTokenValid(token, user)) {
 
-                    authToken.setDetails(
-                            new WebAuthenticationDetailsSource()
-                                    .buildDetails(request)
-                    );
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        user,
+                                        null,
+                                        user.getAuthorities()
+                                );
 
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authToken);
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource()
+                                        .buildDetails(request)
+                        );
+
+                        SecurityContextHolder.getContext()
+                                .setAuthentication(authToken);
+                    }
                 }
             }
+
+        } catch (Exception e) {
+
+            SecurityContextHolder.clearContext();
+
         }
 
         filterChain.doFilter(request, response);

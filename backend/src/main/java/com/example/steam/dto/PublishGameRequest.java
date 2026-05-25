@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.URL;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,9 +25,6 @@ public class PublishGameRequest {
     @NotBlank(message = "La descripción no puede estar vacía.")
     private String description;
 
-    @NotBlank(message = "El género no puede estar vacío.")
-    private String genre;
-
     @NotNull(message = "El precio es obligatorio.")
     @Positive(message = "El precio debe ser un valor positivo.")
     private BigDecimal price;
@@ -36,6 +34,5 @@ public class PublishGameRequest {
 
     private LocalDate releaseDate;
 
-    @NotNull(message = "El ID del desarrollador es obligatorio.")
-    private Integer developerId;
+    private List<Integer> categoryIds;
 }

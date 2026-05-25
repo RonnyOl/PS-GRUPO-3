@@ -16,7 +16,6 @@ import java.util.List;
 public class GameResponse {
     private Long id;
     private String name;
-    private String description;
     private List<String> genre; //viene de game_genre.genre_name
     private BigDecimal price;
     private String imageUrl;

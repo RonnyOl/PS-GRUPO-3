@@ -17,12 +17,12 @@ public class CategoryController {
 
     private final CategoryServiceInterface categoryService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(categoryService.getAllToApi());
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ResponseCategoryDTO> create(
             @RequestBody RequestCreateCategoryDto request
     ) {

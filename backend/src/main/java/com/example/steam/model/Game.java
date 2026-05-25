@@ -29,8 +29,8 @@ public class Game {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "relase_date")
-    private LocalDate relaseDate;
+    @Column(name = "release_date")
+    private LocalDate releaseDate;
 
     @Column(name = "image_url", length = 255)
     private String imageUrl;

@@ -1,12 +1,14 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Gamepad,
     Heart,
     ShoppingCart,
     User
 } from 'lucide-react';
+import axios from 'axios';
+import { useAuth } from '@/context/AuthContext';
 
 /**
  * Componente Navbar reutilizable con estética de Steam (Vapor).
@@ -22,7 +24,7 @@ export default function Navbar({
     onCartClick,
     onToast
 }) {
-
+    const { user, loading } = useAuth();
     // Manejador por defecto si no se pasa la función por props
     const handleToast = (message) => {
         if (onToast) {
@@ -31,6 +33,8 @@ export default function Navbar({
             console.log("Toast simulado:", message);
         }
     };
+
+    if (loading) return (<>Cargando...</>);
 
     return (
         <header className="sticky top-0 z-40 bg-[#171a21] border-b border-sky-950/40 shadow-xl backdrop-blur-md w-full">
@@ -72,10 +76,14 @@ export default function Navbar({
                         >
                             SOPORTE
                         </a>
-                        <div className="flex items-center space-x-1 text-cyan-400 animate-pulse text-xs bg-cyan-950/50 px-2 py-0.5 rounded-full border border-cyan-800">
-                            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-                            <span>Demo Activa</span>
-                        </div>
+                        {user.role === 'ROLE_DEVELOPER' && (<a
+                            href="/publish"
+                            className="hover:text-white transition-colors"
+
+
+                        >
+                            PUBLICAR
+                        </a>)}
                     </nav>
                 </div>
 
@@ -115,7 +123,7 @@ export default function Navbar({
                                 <User className="w-4 h-4 text-cyan-400" />
                             </div>
                         </div>
-                        <span className="hidden md:inline text-xs font-bold text-slate-300">Estudiante_Pro</span>
+                        <span className="hidden md:inline text-xs font-bold text-slate-300">{user.username}</span>
                     </div>
 
                 </div>
