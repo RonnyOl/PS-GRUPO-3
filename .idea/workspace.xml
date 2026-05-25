@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="757e7d41-8590-410e-87a5-634287b1ea54" name="Changes" comment="" />
+    <list default="true" id="757e7d41-8590-410e-87a5-634287b1ea54" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/steam/dto/GameResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/steam/dto/PublishGameRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/steam/controller/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/steam/controller/GameController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/steam/service/GameServiceInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/steam/service/GameServiceInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/steam/service/impl/GameServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/steam/service/impl/GameServiceImpl.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,41 +23,171 @@
       <entry key="_F:/projects/ps-steam/backend" value="3DuzigmIQYQgYfwefeeHM1KUC4o" />
     </persistenceIdMap>
   </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="56" />
+  </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="PS-GRUPO-3" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "dairamazza1"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/RonnyOl/PS-GRUPO-3.git",
+    "accountId": "5375e422-1d0f-4d2c-b679-3627a4044107"
+  }
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0000000000020184" />
+      <entry key="MS500" value="1.004581386520437" />
+      <entry key="S2" value="1.2601652174011166" />
+      <entry key="S5" value="1.5835790509092338" />
+      <entry key="S10" value="1.7639234588028003" />
+      <entry key="S30" value="1.9141482149639923" />
+      <entry key="S60" value="1.956110984647699" />
+      <entry key="M2" value="1.9778092782581371" />
+      <entry key="M5" value="1.9910639103266463" />
+      <entry key="M10" value="1.9955219286015986" />
+      <entry key="M15" value="1.9970123864967517" />
+      <entry key="M30" value="1.9985050758492675" />
+      <entry key="H1" value="1.999252258365858" />
+      <entry key="H2" value="1.9996260592670931" />
+      <entry key="H4" value="1.999813012151319" />
+      <entry key="D1" value="1.9999688329301883" />
+      <entry key="W1" value="1.9999955475019817" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="1.1183074622342712E-147" />
+      <entry key="S5" value="2.163300104173023E-59" />
+      <entry key="S10" value="6.360463223676584E-30" />
+      <entry key="S30" value="2.91783237062449E-10" />
+      <entry key="S60" value="2.4132741146144147E-5" />
+      <entry key="M2" value="0.0069455797610522675" />
+      <entry key="M5" value="0.20762279309417228" />
+      <entry key="M10" value="0.6443889982777348" />
+      <entry key="M15" value="0.9399565238661703" />
+      <entry key="M30" value="1.3710976696174042" />
+      <entry key="H1" value="1.6559570638655976" />
+      <entry key="H2" value="1.8198663858039335" />
+      <entry key="H4" value="1.907808335158314" />
+      <entry key="D1" value="1.9843310083069632" />
+      <entry key="W1" value="1.997754020003677" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.003262062185268735" />
+      <entry key="MS500" value="0.31930660050349347" />
+      <entry key="S2" value="0.9335007246946063" />
+      <entry key="S5" value="1.3981524739339013" />
+      <entry key="S10" value="1.6559352653882968" />
+      <entry key="S30" value="1.873870151529852" />
+      <entry key="S60" value="1.9353936592990586" />
+      <entry key="M2" value="1.9741371668732695" />
+      <entry key="M5" value="2.193345806516405" />
+      <entry key="M10" value="2.636085352912634" />
+      <entry key="M15" value="2.933898886559777" />
+      <entry key="M30" value="3.3676890732422153" />
+      <entry key="H1" value="3.654127453569635" />
+      <entry key="H2" value="3.8189155457073376" />
+      <entry key="H4" value="3.907323250369084" />
+      <entry key="D1" value="3.9842487593933016" />
+      <entry key="W1" value="3.9977422350424403" />
+    </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3,
   &quot;fromUser&quot;: false
 }</component>
   <component name="ProjectId" id="3Duyc5ChpDvJHpsDlGoF5MCned2" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.Build backend.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.Unnamed.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "game-publish",
+    "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "F:/projects/ps-steam/backend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm"
+    "nodejs_package_manager_path": "npm",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="steam.main" />
+      <option name="PROGRAM_PARAMETERS" value="--spring.datasource.url=jdbc:mysql://localhost:3306/steam_demo?serverTimezone=UTC&amp;useSSL=false&amp;allowPublicKeyRetrieval=true --spring.datasource.username=root --spring.datasource.password=root --jwt.secret=9a4f2c8d3b7e1f5a6c8e9d0b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9b0a12" />
+      <selectedOptions>
+        <option name="spring.boot.profiles" visible="false" />
+      </selectedOptions>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.steam.PsSteamApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="757e7d41-8590-410e-87a5-634287b1ea54" name="Changes" comment="" />
@@ -58,6 +195,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779146329864</updated>
+      <workItem from="1779663653762" duration="1643000" />
     </task>
     <servers />
   </component>
