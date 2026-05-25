@@ -7,9 +7,16 @@ import com.example.steam.dto.RegisterRequest;
 import com.example.steam.model.User;
 import com.example.steam.repository.UserRepository;
 import com.example.steam.service.AuthServiceInterface;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthServiceInterface {
@@ -20,18 +27,27 @@ public class AuthServiceImpl implements AuthServiceInterface {
 
     public AuthResponse register(RegisterRequest request) {
 
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setName(request.getName());
-        userRepository.save(user);
+        try {
+            User user = new User();
+            user.setEmail(request.getEmail());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setName(request.getName());
 
-        String token = jwtServiceImpl.generateToken(user.getEmail());
+            // El guardado va a fallar acá si el email está duplicado
+            userRepository.save(user);
 
-        return new AuthResponse(token);
+            String token = jwtServiceImpl.generateToken(user.getEmail());
+            return new AuthResponse(token);
+
+        } catch (DataIntegrityViolationException e) {
+            // Captura el error de clave duplicada de la base de datos
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "El correo electrónico ya se encuentra registrado."
+            );
+        }
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthResponse login(LoginRequest request, HttpServletResponse response) {
 
         User user = (User) userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -47,6 +63,16 @@ public class AuthServiceImpl implements AuthServiceInterface {
 
         String token = jwtServiceImpl.generateToken(user.getEmail());
 
-        return new AuthResponse(token);
+        ResponseCookie cookie = ResponseCookie.from("token", token)
+                .httpOnly(true)
+                .secure(false) // true en producción con HTTPS
+                .path("/")
+                .maxAge(60 * 60 * 24) // 1 día
+                .sameSite("Lax")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return new AuthResponse("Login exitoso");
     }
 }
