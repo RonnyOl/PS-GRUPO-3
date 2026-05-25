@@ -2,11 +2,13 @@ package com.example.steam.controller;
 
 import com.example.steam.dto.GameResponse;
 import com.example.steam.dto.PublishGameRequest;
+import com.example.steam.model.User;
 import com.example.steam.service.GameServiceInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +28,9 @@ public class GameController {
     }
 
     @PostMapping("/publish")
-    public ResponseEntity<GameResponse> publishGame(@Valid @RequestBody PublishGameRequest request) {
-        GameResponse newGame = gameService.publishGame(request);
+    public ResponseEntity<GameResponse> publishGame(@Valid @RequestBody PublishGameRequest request, Authentication  authentication) {
+        User user  = (User) authentication.getPrincipal();
+        GameResponse newGame = gameService.publishGame(request, user);
         return new ResponseEntity<>(newGame, HttpStatus.CREATED);
     }
 }

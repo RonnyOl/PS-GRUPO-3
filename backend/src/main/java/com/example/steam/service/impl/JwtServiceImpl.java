@@ -25,10 +25,11 @@ public class JwtServiceImpl implements JwtServiceInterface {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email) {
-
+    public String generateToken(User user) {
+        System.out.println("Generando token para el usuario: " + user.getEmail() + user.getRole());
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getEmail())
+                .claim("role", user.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(
                         new Date(System.currentTimeMillis() + 1000 * 60 * 60)

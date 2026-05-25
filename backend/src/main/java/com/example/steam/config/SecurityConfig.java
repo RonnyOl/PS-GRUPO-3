@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/v1/auth/**").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .anyRequest().permitAll() /**Authorized acá */
+                        .anyRequest().authenticated() /**Authorized acá */
                 ).addFilterBefore(
                         jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class
