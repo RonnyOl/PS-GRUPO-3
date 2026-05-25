@@ -30,4 +30,10 @@ public class GameController {
         GameResponse newGame = gameService.publishGame(request);
         return new ResponseEntity<>(newGame, HttpStatus.CREATED);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchGames(@RequestParam String name) {
+        return ResponseEntity.ok(gameService.searchGames(name));
+    }
+
 }

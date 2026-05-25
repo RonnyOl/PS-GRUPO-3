@@ -65,6 +65,59 @@ CREATE TABLE game (
         ON DELETE SET NULL
 );
 
+-- AGREGO PRUBA DE JUEGO
+INSERT INTO game (
+    name,
+    description,
+    genre,
+    price,
+    release_date,
+    image_url,
+    developer_id
+)
+VALUES (
+    'DOOM Eternal',
+    'Un shooter frenético donde luchas contra hordas demoníacas en Marte y la Tierra.',
+    'Action',
+    59.99,
+    '2020-03-20',
+    'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/782330/header.jpg',
+    1
+);
+
+-- Agrego desarrollador
+INSERT INTO developer (
+    user_id,
+    studio_name,
+    tax_code,
+    description,
+    funds,
+    website
+)
+VALUES (
+    1,
+    'id Software',
+    'AR-20304050',
+    'Estudio creador de DOOM.',
+    0,
+    'https://www.idsoftware.com'
+);
+
+-- Agrego User
+INSERT INTO user (
+    name,
+    email,
+    password,
+    balance
+)
+VALUES (
+    'Mili',
+    'mili@test.com',
+    '1234',
+    1000.00
+);
+
+
 -- =========================
 -- TABLE: purchase
 -- =========================

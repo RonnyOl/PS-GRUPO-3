@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface GameServiceInterface {
 
+    List<GameResponse> searchGames(String name);
+
      Game getGame(Integer gameId);
      void validateGamesExists(List<Integer> gamesIds);
      List<Game> getGames(List<Integer> gamesIds);

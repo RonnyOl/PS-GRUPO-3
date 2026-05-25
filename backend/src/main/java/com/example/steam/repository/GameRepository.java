@@ -14,4 +14,7 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
 
     @Query("SELECT g.name FROM Game g WHERE g.idGame IN :ids")
     List<String> findNamesByIdsIn(@Param("ids") List<Integer> ids);
+
+    List<Game> findByNameContainingIgnoreCase(String name);
+
 }
