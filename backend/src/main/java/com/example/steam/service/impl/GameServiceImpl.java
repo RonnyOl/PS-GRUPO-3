@@ -169,4 +169,27 @@ public class GameServiceImpl implements GameServiceInterface {
             throw new RuntimeException("Los siguientes juegos no existen en el catálogo: " + missingIds);
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<GameResponse> searchGames(String name) {
+
+        List<Game> games = gameRepository.findByNameContainingIgnoreCase(name);
+
+        return games.stream()
+                .map(game -> new GameResponse(
+                        Long.valueOf(game.getIdGame()),
+                        game.getName(),
+                        game.getDescription(),
+                        game.getGenre(),
+                        game.getPrice(),
+                        game.getImageUrl(),
+                        game.getRelaseDate(),
+                        game.getDeveloper().getStudioName()
+                ))
+                .toList();
+    }
+}
+
+
 }
