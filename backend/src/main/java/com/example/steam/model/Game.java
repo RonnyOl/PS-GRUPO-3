@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "game")
@@ -25,9 +26,6 @@ public class Game {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 50)
-    private String genre;
-
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -41,7 +39,17 @@ public class Game {
     @JoinColumn(name = "developer_id")
     private Developer developer;
 
+    @ManyToMany
+    @JoinTable(
+            name = "game_category",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
+
     public Number getPre() {
         return null;
     }
+
+
 }

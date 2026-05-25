@@ -2,6 +2,7 @@ package com.example.steam.service.impl;
 
 import com.example.steam.dto.GameResponse;
 import com.example.steam.dto.PublishGameRequest;
+import com.example.steam.model.Category;
 import com.example.steam.model.Developer;
 import com.example.steam.model.Game;
 import com.example.steam.model.dto.ResponseGameDto;
@@ -12,6 +13,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,9 +43,12 @@ public class GameServiceImpl implements GameServiceInterface {
                 game.getName(),
                 game.getDescription(),
                 game.getPrice().doubleValue(),
-                game.getGenre(),
                 game.getDeveloper().getStudioName(),
-                game.getImageUrl()
+                game.getImageUrl(),
+                game.getCategories()
+                        .stream()
+                        .map(Category::getName)
+                        .toList()
         );
     }
 
@@ -57,9 +62,12 @@ public class GameServiceImpl implements GameServiceInterface {
                 game.getName(),
                 game.getDescription(),
                 game.getPrice().doubleValue(),
-                game.getGenre(),
                 game.getDeveloper().getStudioName(),
-                game.getImageUrl()
+                game.getImageUrl(),
+                game.getCategories()
+                        .stream()
+                        .map(Category::getName)
+                        .toList()
         )).toList();
     }
 
@@ -73,9 +81,12 @@ public class GameServiceImpl implements GameServiceInterface {
                 game.getName(),
                 game.getDescription(),
                 game.getPrice().doubleValue(),
-                game.getGenre(),
                 game.getDeveloper().getStudioName(),
-                game.getImageUrl()
+                game.getImageUrl(),
+                game.getCategories()
+                        .stream()
+                        .map(Category::getName)
+                        .toList()
         )).toList();
     }
 
@@ -93,7 +104,6 @@ public class GameServiceImpl implements GameServiceInterface {
         Game game = Game.builder()
                 .name(request.getName())
                 .description(request.getDescription())
-                .genre(request.getGenre())
                 .price(request.getPrice())
                 .imageUrl(request.getImageUrl())
                 .relaseDate(request.getReleaseDate())
@@ -107,7 +117,7 @@ public class GameServiceImpl implements GameServiceInterface {
         return new GameResponse(
                 Long.valueOf(savedGame.getIdGame()),
                 savedGame.getName(), savedGame.getDescription(),
-                savedGame.getGenre(), savedGame.getPrice(), savedGame.getImageUrl(),
+                Collections.singletonList(savedGame.getCategories().toString()), savedGame.getPrice(), savedGame.getImageUrl(),
                 savedGame.getRelaseDate(), savedGame.getDeveloper().getStudioName());
     }
 

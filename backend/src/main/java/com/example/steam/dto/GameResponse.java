@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -16,7 +17,7 @@ public class GameResponse {
     private Long id;
     private String name;
     private String description;
-    private String genre;
+    private List<String> genre; //viene de game_genre.genre_name
     private BigDecimal price;
     private String imageUrl;
     private LocalDate releaseDate; //AAAA-MM-DD
