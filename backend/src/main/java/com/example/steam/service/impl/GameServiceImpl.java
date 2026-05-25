@@ -42,7 +42,8 @@ public class GameServiceImpl implements GameServiceInterface {
                 game.getDescription(),
                 game.getPrice().doubleValue(),
                 game.getGenre(),
-                game.getDeveloper().getStudioName()
+                game.getDeveloper().getStudioName(),
+                game.getImageUrl()
         );
     }
 
@@ -57,7 +58,8 @@ public class GameServiceImpl implements GameServiceInterface {
                 game.getDescription(),
                 game.getPrice().doubleValue(),
                 game.getGenre(),
-                game.getDeveloper().getStudioName()
+                game.getDeveloper().getStudioName(),
+                game.getImageUrl()
         )).toList();
     }
 
@@ -72,7 +74,8 @@ public class GameServiceImpl implements GameServiceInterface {
                 game.getDescription(),
                 game.getPrice().doubleValue(),
                 game.getGenre(),
-                game.getDeveloper().getStudioName()
+                game.getDeveloper().getStudioName(),
+                game.getImageUrl()
         )).toList();
     }
 

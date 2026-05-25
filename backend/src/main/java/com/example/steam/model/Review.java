@@ -19,11 +19,11 @@ public class Review {
     private Integer idReview;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "juego_id", nullable = false)
+    @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
     @Column(nullable = false)

@@ -5,6 +5,7 @@ import com.example.steam.dto.LoginRequest;
 import com.example.steam.dto.RegisterRequest;
 import com.example.steam.service.AuthServiceInterface;
 import com.example.steam.service.impl.AuthServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +25,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(
-            @RequestBody LoginRequest request
+            @RequestBody LoginRequest request,
+            HttpServletResponse response
     ) {
-        return authService.login(request);
+        return authService.login(request, response);
     }
 }
