@@ -1,5 +1,6 @@
 package com.example.steam.service.impl;
 
+import com.example.steam.model.Game;
 import com.example.steam.repository.LibraryRepository;
 import com.example.steam.service.LibraryServiceInterface;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,10 @@ public class LibraryServiceImpl implements LibraryServiceInterface {
     @Transactional(readOnly = true)
     public List<Integer> findOwnedGamesInSelection(Integer userId, List<Integer> gameIdsToCheck) {
         return libraryRepository.findOwnedGameIdsByUserIdAndGameIds(userId, gameIdsToCheck);
+    }
+
+    @Override
+    public List<Game> findOwnedGamesByUser(String email) {
+        return libraryRepository.findAllGamesByUserEmail(email);
     }
 }

@@ -13,8 +13,13 @@ import {
     Gamepad
 } from 'lucide-react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation'; // 👈 Importamos el enrutador de Next.js
+import { useAuth } from '@/context/AuthContext'; // 👈 Importamos tu contexto compartido
 
 export default function Login() {
+    const router = useRouter(); // 👈 Instanciamos el router
+    const { setUser } = useAuth(); // 👈 Traemos la función para actualizar el usuario global
+
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
@@ -75,7 +80,6 @@ export default function Login() {
         setIsLoading(true);
 
         try {
-
             const endpoint = isLogin ? 'http://localhost:8080/v1/auth/login' : 'http://localhost:8080/v1/auth/register';
 
             const payload = isLogin
@@ -90,9 +94,17 @@ export default function Login() {
             if (response.status === 200) {
                 if (isLogin) {
                     setFeedback({ type: 'success', message: '¡Sesión iniciada! Redirigiendo...' });
+
+                    // 1. Guardamos los datos del usuario logueado en el estado global compartida
+                    // Esto evita que al cambiar de página el AuthProvider piense que es un intruso anónimo.
+                    setUser(data);
+
+                    // 2. Redirección limpia mediante SPA (Single Page Application) sin romper cookies
                     setTimeout(() => {
-                        window.location.replace("/");
-                    }, 1800);
+                        router.push("/");
+                        router.refresh(); // Refresca los layouts para mostrar la Navbar actualizada
+                    }, 1500);
+
                 } else {
                     setFeedback({ type: 'success', message: '¡Usuario registrado! Redirigiendo al login...' });
                     setTimeout(() => {
@@ -102,28 +114,24 @@ export default function Login() {
                     }, 1800);
                 }
             } else {
-                setFeedback({ type: 'error', message: data.message || 'Ocurrió un error en el servidorphite.' });
+                setFeedback({ type: 'error', message: data.message || 'Ocurrió un error en el servidor.' });
             }
         } catch (err) {
             setIsLoading(false);
-            setFeedback({ type: 'error', message: `Ocurrió un error: ${err.response.data.message}` });
+            const errorMsg = err.response?.data?.message || 'Credenciales inválidas o error de conexión.';
+            setFeedback({ type: 'error', message: `Ocurrió un error: ${errorMsg}` });
             console.error(err);
         }
-
     };
 
     return (
         <div className="min-h-screen bg-[#0b0e14] flex items-center justify-center p-4 md:p-8 relative overflow-hidden select-none">
-
-            {/* Orbes traslúcidos decorativos en el fondo para profundidad visual */}
+            {/* ... Resto de tu código JSX visual se mantiene exactamente igual ... */}
             <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#66c0f4]/10 rounded-full blur-[130px] animate-pulse" />
             <div className="absolute bottom-[-15%] right-[-10%] w-[600px] h-[600px] bg-[#4facfe]/10 rounded-full blur-[150px]" />
             <div className="absolute top-[40%] right-[10%] w-[300px] h-[300px] bg-purple-600/[0.04] rounded-full blur-[100px]" />
 
-            {/* Tarjeta de Login Principal con Glassmorphism */}
             <div className="w-full max-w-md bg-[#121824]/60 border border-white/[0.07] backdrop-blur-2xl rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] p-8 md:p-10 z-10 transition-all duration-300 hover:border-white/[0.12] hover:shadow-[0_25px_60px_-15px_rgba(102,192,244,0.05)]">
-
-                {/* Logo / Header de Marca */}
                 <div className="flex flex-col items-center mb-8">
                     <div className="bg-[#1c2435]/80 p-3 rounded-2xl border border-white/[0.05] shadow-inner mb-3">
                         <Gamepad className="w-8 h-8 text-[#66c0f4]" />
@@ -132,12 +140,11 @@ export default function Login() {
                     <span className="text-[10px] block text-[#66c0f4] font-bold tracking-widest uppercase mt-0.5">Tienda Digital</span>
                 </div>
 
-                {/* Mensaje Informativo Flotante o Alerta de Éxito/Error */}
                 {feedback.message ? (
                     <div className={`p-4 rounded-xl mb-6 text-xs flex items-start space-x-3 backdrop-blur-md animate-fade-in ${feedback.type === 'success'
                         ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
                         : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'
-                        }`}>
+                    }`}>
                         {feedback.type === 'success' ? (
                             <CheckCircle className="w-4.5 h-4.5 shrink-0" />
                         ) : (
@@ -147,10 +154,7 @@ export default function Login() {
                     </div>
                 ) : null}
 
-                {/* Formulario HTML */}
                 <form onSubmit={handleSubmit} className="space-y-5">
-
-                    {/* CAMPO: name (Solo se muestra en Registro) */}
                     {!isLogin && (
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block pl-1">Nombre de usuario</label>
@@ -169,7 +173,6 @@ export default function Login() {
                         </div>
                     )}
 
-                    {/* CAMPO: email */}
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block pl-1">Correo electrónico</label>
                         <div className="relative">
@@ -186,7 +189,6 @@ export default function Login() {
                         {errors.email && <span className="text-[10px] text-rose-400 block pl-1">{errors.email}</span>}
                     </div>
 
-                    {/* CAMPO: password */}
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block pl-1">Contraseña</label>
                         <div className="relative">
@@ -210,7 +212,6 @@ export default function Login() {
                         {errors.password && <span className="text-[10px] text-rose-400 block pl-1">{errors.password}</span>}
                     </div>
 
-                    {/* CAMPO: confirmPassword (Solo se muestra en Registro) */}
                     {!isLogin && (
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block pl-1">Confirmar Contraseña</label>
@@ -229,7 +230,6 @@ export default function Login() {
                         </div>
                     )}
 
-                    {/* Botón de Enviar con Hover Glow */}
                     <button
                         type="submit"
                         disabled={isLoading}
@@ -246,7 +246,6 @@ export default function Login() {
                     </button>
                 </form>
 
-                {/* Sección inferior de Switch entre Login/Registro */}
                 <div className="pt-6 border-t border-white/[0.05] mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                     <span className="text-slate-400">
                         {isLogin ? "¿Eres nuevo por aquí?" : "¿Ya eres miembro?"}
@@ -262,7 +261,6 @@ export default function Login() {
                         {isLogin ? "Registrarse" : "Inicia Sesión"}
                     </button>
                 </div>
-
             </div>
         </div>
     );

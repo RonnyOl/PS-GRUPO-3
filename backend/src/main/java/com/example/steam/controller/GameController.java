@@ -3,6 +3,7 @@ package com.example.steam.controller;
 import com.example.steam.dto.GameResponse;
 import com.example.steam.dto.PublishGameRequest;
 import com.example.steam.model.User;
+import com.example.steam.model.dto.ResponseGameDto;
 import com.example.steam.service.GameServiceInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/games")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -35,7 +39,7 @@ public class GameController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchGames(@RequestParam String name) {
+    public ResponseEntity<List<ResponseGameDto>> searchGames(@RequestParam String name) {
         return ResponseEntity.ok(gameService.searchGames(name));
     }
 

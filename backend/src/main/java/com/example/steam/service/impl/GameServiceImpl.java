@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class GameServiceImpl implements GameServiceInterface {
 
@@ -42,17 +44,18 @@ public class GameServiceImpl implements GameServiceInterface {
         }
 
         return new ResponseGameDto(
-                game.getIdGame().toString(),
-                game.getName(),
-                game.getDescription(),
-                game.getPrice().doubleValue(),
-                game.getDeveloper().getStudioName(),
-                game.getImageUrl(),
-                game.getCategories()
-                        .stream()
-                        .map(Category::getName)
-                        .toList()
-        );
+                        game.getIdGame().toString(),
+                        game.getName(),
+                        game.getDescription(),
+                        game.getPrice().doubleValue(),
+                        game.getDeveloper().getStudioName(),
+                        game.getImageUrl(),
+                        game.getCategories()
+                                .stream()
+                                .map(Category::getName)
+                                .toList(),
+                        game.getReleaseDate()
+                );
     }
 
     @Override
@@ -60,18 +63,21 @@ public class GameServiceImpl implements GameServiceInterface {
     public List<ResponseGameDto> getGamesToApi(List<Integer> gamesIds) {
         List<Game> games = gameRepository.findAllByIdGameIn(gamesIds);
 
-        return games.stream().map(game -> new ResponseGameDto(
-                game.getIdGame().toString(),
-                game.getName(),
-                game.getDescription(),
-                game.getPrice().doubleValue(),
-                game.getDeveloper().getStudioName(),
-                game.getImageUrl(),
-                game.getCategories()
-                        .stream()
-                        .map(Category::getName)
-                        .toList()
-        )).toList();
+        return games.stream()
+                .map(game -> new ResponseGameDto(
+                        game.getIdGame().toString(),
+                        game.getName(),
+                        game.getDescription(),
+                        game.getPrice().doubleValue(),
+                        game.getDeveloper().getStudioName(),
+                        game.getImageUrl(),
+                        game.getCategories()
+                                .stream()
+                                .map(Category::getName)
+                                .toList(),
+                        game.getReleaseDate()
+                ))
+                .toList();
     }
 
     @Override
@@ -79,18 +85,21 @@ public class GameServiceImpl implements GameServiceInterface {
     public List<ResponseGameDto> getAllGamesToApi() {
         List<Game> games = gameRepository.findAll();
 
-        return games.stream().map(game -> new ResponseGameDto(
-                game.getIdGame().toString(),
-                game.getName(),
-                game.getDescription(),
-                game.getPrice().doubleValue(),
-                game.getDeveloper().getStudioName(),
-                game.getImageUrl(),
-                game.getCategories()
-                        .stream()
-                        .map(Category::getName)
-                        .toList()
-        )).toList();
+        return games.stream()
+                .map(game -> new ResponseGameDto(
+                        game.getIdGame().toString(),
+                        game.getName(),
+                        game.getDescription(),
+                        game.getPrice().doubleValue(),
+                        game.getDeveloper().getStudioName(),
+                        game.getImageUrl(),
+                        game.getCategories()
+                                .stream()
+                                .map(Category::getName)
+                                .toList(),
+                        game.getReleaseDate()
+                ))
+                .toList();
     }
 
     @Override
@@ -177,24 +186,24 @@ public class GameServiceImpl implements GameServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GameResponse> searchGames(String name) {
+    public List<ResponseGameDto> searchGames(String name) {
 
         List<Game> games = gameRepository.findByNameContainingIgnoreCase(name);
 
         return games.stream()
-                .map(game -> new GameResponse(
-                        Long.valueOf(game.getIdGame()),
+                .map(game -> new ResponseGameDto(
+                        game.getIdGame().toString(),
                         game.getName(),
                         game.getDescription(),
-                        game.getGenre(),
-                        game.getPrice(),
+                        game.getPrice().doubleValue(),
+                        game.getDeveloper().getStudioName(),
                         game.getImageUrl(),
-                        game.getRelaseDate(),
-                        game.getDeveloper().getStudioName()
+                        game.getCategories()
+                                .stream()
+                                .map(Category::getName)
+                                .toList(),
+                        game.getReleaseDate()
                 ))
                 .toList();
     }
-}
-
-
 }
