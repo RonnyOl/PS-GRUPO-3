@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "library", uniqueConstraints = {
+@Table(name = "`library`", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "game_id"})
 })
 @Getter

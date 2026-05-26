@@ -52,7 +52,7 @@ public class PurchaseServiceImpl implements PurchaseServiceInterface {
     @Transactional
     public ResponseBuyDTO purchaseGame(RequestBuyDTO requestBuyDTO) {
 
-        User user = userService.getUserByName(requestBuyDTO.user());
+        User user = userService.getUserByName(requestBuyDTO.userName());
 
         var uniqueGameIds = requestBuyDTO.gamesIds().stream().distinct().toList();
 
@@ -125,7 +125,7 @@ public class PurchaseServiceImpl implements PurchaseServiceInterface {
         movement.setAmount(negate);
         movement.setDescription("Compra de juegos. Orden ID: " + savedPurchase.getIdPurchase());
         movement.setTransactionDate(LocalDateTime.now());
-        movement.setType(TransactionType.WITHDRAWAL);
+        movement.setType(TransactionType.EXPENSE);
         return movement;
     }
 

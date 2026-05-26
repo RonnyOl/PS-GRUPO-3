@@ -1,5 +1,6 @@
 package com.example.steam.repository;
 
+import com.example.steam.model.Game;
 import com.example.steam.model.Library;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,7 @@ public interface LibraryRepository extends JpaRepository<Library, Integer> {
             @Param("idUser") Integer idUser,
             @Param("idGames") List<Integer> idGames
     );
+
+    @Query("SELECT l.game FROM Library l WHERE l.user.email = :email")
+    List<Game> findAllGamesByUserEmail(@Param("email") String email);
 }
