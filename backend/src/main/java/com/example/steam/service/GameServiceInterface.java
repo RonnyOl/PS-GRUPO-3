@@ -4,6 +4,7 @@ import com.example.steam.dto.GameResponse;
 import com.example.steam.dto.PublishGameRequest;
 import com.example.steam.model.Game;
 import com.example.steam.model.User;
+import com.example.steam.model.dto.ResponseGameDetailDto;
 import com.example.steam.model.dto.ResponseGameDto;
 
 import java.util.List;
@@ -23,4 +24,5 @@ public interface GameServiceInterface {
      List<ResponseGameDto> getAllGamesToApi();
 
      GameResponse publishGame(PublishGameRequest request, User currentUser);
+     ResponseGameDetailDto getGameDetail(Integer gameId);
 }

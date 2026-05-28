@@ -2,14 +2,12 @@ package com.example.steam.service.impl;
 
 import com.example.steam.dto.GameResponse;
 import com.example.steam.dto.PublishGameRequest;
-import com.example.steam.model.Category;
-import com.example.steam.model.Developer;
-import com.example.steam.model.Game;
-import com.example.steam.model.User;
+import com.example.steam.model.*;
+import com.example.steam.model.dto.GameCommunityStatsDto;
+import com.example.steam.model.dto.ResponseGameDetailDto;
 import com.example.steam.model.dto.ResponseGameDto;
-import com.example.steam.repository.CategoryRepository;
-import com.example.steam.repository.DeveloperRepository;
-import com.example.steam.repository.GameRepository;
+import com.example.steam.model.dto.ResponseReviewDTO;
+import com.example.steam.repository.*;
 import com.example.steam.service.GameServiceInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +25,15 @@ public class GameServiceImpl implements GameServiceInterface {
     private final GameRepository gameRepository;
     private final DeveloperRepository developerRepository;
     private final CategoryRepository categoryRepository;
+    private final ReviewRepository  reviewRepository;
+    private  final LibraryRepository libraryRepository;
 
-    public GameServiceImpl(GameRepository gameRepository, DeveloperRepository developerRepository, CategoryRepository categoryRepository) {
+    public GameServiceImpl(GameRepository gameRepository, DeveloperRepository developerRepository, CategoryRepository categoryRepository, ReviewRepository reviewRepository, LibraryRepository libraryRepository) {
         this.gameRepository = gameRepository;
         this.developerRepository = developerRepository;
         this.categoryRepository = categoryRepository;
+        this.reviewRepository = reviewRepository;
+        this.libraryRepository = libraryRepository;
     }
 
     @Override
@@ -133,6 +135,34 @@ public class GameServiceImpl implements GameServiceInterface {
                 savedGame.getName(),
                 Collections.singletonList(savedGame.getCategories().toString()), savedGame.getPrice(), savedGame.getImageUrl(),
                 savedGame.getReleaseDate(), savedGame.getDeveloper().getStudioName());
+    }
+
+    @Override
+    public ResponseGameDetailDto getGameDetail(Integer gameId) {
+        Game game = gameRepository.findGameWithDeveloperById(gameId)
+                .orElseThrow(() -> new RuntimeException("Juego no encontrado"));
+
+        List<Review> reviews = reviewRepository.findReviewsByGameId(gameId);
+        List<ResponseReviewDTO> reviewDtos = reviews.stream()
+                .map(review -> new ResponseReviewDTO(
+                        review.getUser().getUsername(),
+                        review.getScore(),
+                        review.getComment(),
+                        review.getReviewDate()
+                ))
+                .toList();
+
+        GameCommunityStatsDto stats = libraryRepository.findCommunityStatsByGameId(gameId);
+        return new ResponseGameDetailDto(
+                game.getIdGame(),
+                game.getName(),
+                game.getDescription(),
+                game.getPrice(),
+                game.getDeveloper() != null ? game.getDeveloper().getStudioName() : "Independiente",
+                stats.installedCount(),
+                stats.favoriteCount(),
+                reviewDtos
+        );
     }
 
     @Override

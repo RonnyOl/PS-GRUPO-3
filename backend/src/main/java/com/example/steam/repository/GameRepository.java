@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Integer> {
@@ -17,4 +18,6 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
 
     List<Game> findByNameContainingIgnoreCase(String name);
 
+    @Query("SELECT g FROM Game g LEFT JOIN FETCH g.developer WHERE g.idGame = :idGame")
+    Optional<Game> findGameWithDeveloperById(@Param("idGame") Integer idGame);
 }
