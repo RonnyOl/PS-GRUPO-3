@@ -3,6 +3,7 @@ package com.example.steam.controller;
 import com.example.steam.dto.GameResponse;
 import com.example.steam.dto.PublishGameRequest;
 import com.example.steam.model.User;
+import com.example.steam.model.dto.ResponseGameDetailDto;
 import com.example.steam.model.dto.ResponseGameDto;
 import com.example.steam.service.GameServiceInterface;
 import jakarta.validation.Valid;
@@ -41,6 +42,11 @@ public class GameController {
     @GetMapping("/search")
     public ResponseEntity<List<ResponseGameDto>> searchGames(@RequestParam String name) {
         return ResponseEntity.ok(gameService.searchGames(name));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseGameDetailDto> searchGames(@PathVariable Integer id) {
+        return ResponseEntity.ok(gameService.getGameDetail(id));
     }
 
 }

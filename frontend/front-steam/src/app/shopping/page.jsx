@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ShoppingBag, Flame, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import Link from "next/link"; // 👈 1. Importamos el componente nativo de enrutamiento
 
 export default function ShoppingPage() {
     const { addToCart, cart, setIsOpen } = useCart();
@@ -29,8 +30,6 @@ export default function ShoppingPage() {
     }, []);
 
     const handleAddAndOpen = (game) => {
-        // Normalizamos las propiedades mapeando los nombres que vienen del backend de tu API
-        // (Ej: id, name, price, imageUrl / image_url)
         const cartItem = {
             id_game: game.id || game.id_game,
             name: game.name,
@@ -40,10 +39,9 @@ export default function ShoppingPage() {
         };
 
         addToCart(cartItem);
-        setIsOpen(true); // Abre automáticamente el CartDrawer
+        setIsOpen(true);
     };
 
-    // Formateador interno para los precios
     const formatPrice = (price) => {
         const parsedPrice = parseFloat(price || 0);
         return parsedPrice === 0 ? "Gratis" : `u$s ${parsedPrice.toFixed(2)}`;
@@ -103,8 +101,6 @@ export default function ShoppingPage() {
                             {games.map((game) => {
                                 const gameId = game.id || game.id_game;
                                 const isFree = parseFloat(game.price || 0) === 0;
-
-                                // Verificamos si el ítem ya está agregado al carrito
                                 const isInCart = cart.some(item => (item.id_game === gameId || item.game_id === gameId));
                                 const gameImage = game.imageUrl || game.image_url;
 
@@ -113,58 +109,65 @@ export default function ShoppingPage() {
                                         key={gameId}
                                         className="bg-[#171a21] border border-white/5 rounded-xl overflow-hidden flex flex-col justify-between group hover:border-[#2a475e]/70 transition-all shadow-lg"
                                     >
-                                        {/* Portada del Juego */}
-                                        <div className="bg-slate-900 aspect-video relative flex items-center justify-center overflow-hidden">
-                                            {gameImage ? (
-                                                <img
-                                                    src={gameImage}
-                                                    alt={game.name}
-                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                                />
-                                            ) : (
-                                                <>
-                                                    <Sparkles className="w-8 h-8 opacity-20 absolute text-slate-500" />
-                                                    <span className="text-xs font-mono tracking-widest text-slate-600 uppercase">VAPOR ART</span>
-                                                </>
-                                            )}
-                                        </div>
+                                        {/* 👈 2. Envolvemos la parte interactiva superior de la card con el Link dinámico */}
+                                        <Link href={`/games/${gameId}`} className="block flex-grow flex flex-col cursor-pointer">
 
-                                        {/* Info */}
-                                        <div className="p-4 flex-grow flex flex-col justify-between space-y-3">
-                                            <div>
-                                                {game.company && (
-                                                    <span className="text-[10px] text-slate-500 font-semibold block uppercase truncate">
-                            {game.company}
-                          </span>
-                                                )}
-                                                <h3 className="text-white font-bold text-base mt-0.5 truncate" title={game.name}>
-                                                    {game.name}
-                                                </h3>
-
-                                                {/* Categorías Dinámicas */}
-                                                {game.categories && game.categories.length > 0 && (
-                                                    <div className="flex flex-wrap gap-1 mt-1.5">
-                                                        {game.categories.map((cat, idx) => (
-                                                            <span key={idx} className="px-1.5 py-0.5 bg-[#1b2838] text-cyan-400 text-[8px] font-bold uppercase tracking-wider rounded border border-[#2a475e]/30">
-                                {cat}
-                              </span>
-                                                        ))}
-                                                    </div>
+                                            {/* Portada del Juego */}
+                                            <div className="bg-slate-900 aspect-video relative flex items-center justify-center overflow-hidden">
+                                                {gameImage ? (
+                                                    <img
+                                                        src={gameImage}
+                                                        alt={game.name}
+                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <>
+                                                        <Sparkles className="w-8 h-8 opacity-20 absolute text-slate-500" />
+                                                        <span className="text-xs font-mono tracking-widest text-slate-600 uppercase">VAPOR ART</span>
+                                                    </>
                                                 )}
                                             </div>
 
-                                            {/* Precio y Acción */}
+                                            {/* Info interna */}
+                                            <div className="p-4 flex-grow flex flex-col justify-between space-y-3">
+                                                <div>
+                                                    {game.company && (
+                                                        <span className="text-[10px] text-slate-500 font-semibold block uppercase truncate">
+                                                            {game.company}
+                                                        </span>
+                                                    )}
+                                                    {/* El título cambia a color cyan cuando el usuario pasa el mouse por la card */}
+                                                    <h3 className="text-white font-bold text-base mt-0.5 truncate group-hover:text-cyan-400 transition-colors" title={game.name}>
+                                                        {game.name}
+                                                    </h3>
+
+                                                    {/* Categorías Dinámicas */}
+                                                    {game.categories && game.categories.length > 0 && (
+                                                        <div className="flex flex-wrap gap-1 mt-1.5">
+                                                            {game.categories.map((cat, idx) => (
+                                                                <span key={idx} className="px-1.5 py-0.5 bg-[#1b2838] text-cyan-400 text-[8px] font-bold uppercase tracking-wider rounded border border-[#2a475e]/30">
+                                                                    {cat}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </Link>
+
+                                        {/* Precio y Acción (Mantenido fuera del Link para evitar eventos de click anidados molestos) */}
+                                        <div className="p-4 pt-0">
                                             <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                        <span className={`text-sm font-black ${isFree ? 'text-emerald-400' : 'text-white'}`}>
-                          {formatPrice(game.price)}
-                        </span>
+                                                <span className={`text-sm font-black ${isFree ? 'text-emerald-400' : 'text-white'}`}>
+                                                    {formatPrice(game.price)}
+                                                </span>
 
                                                 <button
                                                     onClick={() => handleAddAndOpen(game)}
                                                     disabled={isInCart}
                                                     className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded tracking-wider transition-all cursor-pointer ${
                                                         isInCart
-                                                            ? 'bg-emerald-960/40 text-emerald-500 border border-emerald-900/40 cursor-not-allowed'
+                                                            ? 'bg-emerald-950/40 text-emerald-500 border border-emerald-900/40 cursor-not-allowed'
                                                             : 'bg-[#66c0f4] hover:bg-cyan-400 text-[#171a21]'
                                                     }`}
                                                 >
@@ -172,6 +175,7 @@ export default function ShoppingPage() {
                                                 </button>
                                             </div>
                                         </div>
+
                                     </div>
                                 );
                             })}
