@@ -5,7 +5,7 @@ import { Search, Tag, Calendar, ShoppingCart, Gamepad2, SlidersHorizontal, Eye, 
 
 /**
  * Componente GameSearchList: Buscador y listado vertical de juegos.
- * Basado estrictamente en el esquema SQL (id_game, name, description, genre, price, image_url, release_date).
+ * Basado estrictamente en el esquema SQL (id_game, name, description, genre, price, imageUrl, release_date).
  * 
  * @param {Array} games - Lista de juegos provenientes de la base de datos.
  * @param {Function} onGameClick - Callback para ver la ficha del juego.
@@ -175,9 +175,9 @@ export default function GameSearchList({ games = [], onGameClick, onAddToCart })
                                 >
                                     {/* Imagen del Juego o Placeholder */}
                                     <div className="w-full md:w-44 h-24 shrink-0 rounded overflow-hidden bg-slate-900 relative">
-                                        {game.image_url ? (
+                                        {game.imageUrl ? (
                                             <img
-                                                src={game.image_url}
+                                                src={game.imageUrl}
                                                 alt={game.name}
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             />

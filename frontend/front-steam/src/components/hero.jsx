@@ -60,16 +60,16 @@ export default function Hero({ games = [] }) {
             {/* Efecto de fondo dinámico con desenfoque basado en la imagen del juego actual */}
             <div
                 className="absolute inset-0 bg-cover bg-center opacity-30 blur-3xl transition-all duration-1000 ease-in-out scale-110"
-                style={{ backgroundImage: `url(${currentGame.image_url})` }}
+                style={{ backgroundImage: `url(${currentGame.imageUrl})` }}
             />
 
             <div className="relative h-full flex flex-col md:flex-row z-10">
 
                 {/* ÁREA VISUAL: image_url */}
                 <div className="relative w-full md:w-2/3 h-1/2 md:h-full overflow-hidden group/image">
-                    {currentGame.image_url ? (
+                    {currentGame.imageUrl ? (
                         <img
-                            src={currentGame.image_url}
+                            src={currentGame.imageUrl}
                             alt={currentGame.name}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover/image:scale-105"
                         />

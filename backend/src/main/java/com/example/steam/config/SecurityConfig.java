@@ -37,6 +37,9 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/v1/auth/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers("/v1/games/**").permitAll()
+                        .requestMatchers("/v1/categories/**").permitAll()
+                        .requestMatchers("/v1/games/wishlist/**").permitAll()
                         .anyRequest().authenticated() /**Authorized acá */
                 ).addFilterBefore(
                         jwtAuthFilter,

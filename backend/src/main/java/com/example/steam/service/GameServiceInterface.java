@@ -6,6 +6,7 @@ import com.example.steam.model.Game;
 import com.example.steam.model.User;
 import com.example.steam.model.dto.ResponseGameDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface GameServiceInterface {
@@ -20,7 +21,11 @@ public interface GameServiceInterface {
 
      ResponseGameDto getGameToApi(Integer gameId);
      List<ResponseGameDto> getGamesToApi(List<Integer> gamesIds);
-     List<ResponseGameDto> getAllGamesToApi();
+ List<ResponseGameDto> getAllGamesToApi(
+         Long categoryId,
+         BigDecimal minPrice,
+         BigDecimal maxPrice
+ );
 
      GameResponse publishGame(PublishGameRequest request, User currentUser);
 }

@@ -14,6 +14,7 @@ import com.example.steam.service.GameServiceInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -81,9 +82,17 @@ public class GameServiceImpl implements GameServiceInterface {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ResponseGameDto> getAllGamesToApi() {
-        List<Game> games = gameRepository.findAll();
+    public List<ResponseGameDto> getAllGamesToApi(
+            Long categoryId,
+            BigDecimal minPrice,
+            BigDecimal maxPrice
+    ) {
+
+        List<Game> games = gameRepository.findGamesWithFilters(
+                categoryId,
+                minPrice,
+                maxPrice
+        );
 
         return games.stream()
                 .map(game -> new ResponseGameDto(
@@ -206,4 +215,6 @@ public class GameServiceImpl implements GameServiceInterface {
                 ))
                 .toList();
     }
+
+
 }

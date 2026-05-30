@@ -14,7 +14,10 @@ import {
   RefreshCw,
   Library
 } from "lucide-react";
+import axios from "axios";
+import { Heart, Trash2 } from "lucide-react";
 import { useUserInformation } from "@/hooks/useUserInformation";
+import { useEffect } from 'react';
 
 /**
  * Componente UserProfile: Visualiza la información del perfil del usuario
@@ -25,6 +28,8 @@ import { useUserInformation } from "@/hooks/useUserInformation";
 export default function UserProfile({ initialEmail = "" }) {
   const [emailInput, setEmailInput] = useState(initialEmail);
   const [searchEmail, setSearchEmail] = useState(initialEmail);
+  const [wishlist, setWishlist] = useState([]);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
   // Hook reactivo conectado a nuestro servicio
   const { data, loading, error, refetch } = useUserInformation(searchEmail);
@@ -35,7 +40,55 @@ export default function UserProfile({ initialEmail = "" }) {
       setSearchEmail(emailInput.trim());
     }
   };
+  const fetchWishlist = async () => {
+    try {
 
+      setWishlistLoading(true);
+
+      const response = await axios.get(
+        "http://localhost:8080/v1/games/wishlist",
+        {
+          withCredentials: true
+        }
+      );
+
+      setWishlist(response.data);
+
+    } catch (error) {
+
+      console.error(error);
+
+    } finally {
+
+      setWishlistLoading(false);
+
+    }
+  };
+
+  const removeFromWishlist = async (gameId) => {
+    try {
+
+      await axios.delete(
+        `http://localhost:8080/v1/games/wishlist/remove/${gameId}`,
+        {
+
+          withCredentials: true
+        }
+      );
+
+      setWishlist(prev =>
+        prev.filter(game => game.id !== gameId)
+      );
+
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data || "Error al eliminar");
+
+    }
+  };
+  useEffect(() => {
+    fetchWishlist();
+  }, []);
   // Formateador de fecha
   const formatDate = (dateString) => {
     if (!dateString) return "Sin fecha";
@@ -243,6 +296,82 @@ export default function UserProfile({ initialEmail = "" }) {
                 })}
               </div>
             )}
+          </div>
+
+          <div className="space-y-4 mt-8">
+
+            <div className="flex items-center space-x-2 pb-2 border-b border-white/5">
+              <Heart className="w-5 h-5 text-rose-400" />
+              <h4 className="font-bold text-sm uppercase tracking-widest text-white">
+                Wishlist
+              </h4>
+            </div>
+
+            {wishlistLoading ? (
+
+              <div className="text-center text-slate-400 py-8">
+                Cargando wishlist...
+              </div>
+
+            ) : wishlist.length === 0 ? (
+
+              <div className="bg-[#171a21]/30 border border-white/5 rounded-xl p-8 text-center">
+                <p className="text-slate-400">
+                  No tienes juegos en la wishlist.
+                </p>
+              </div>
+
+            ) : (
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                {wishlist.map((game) => (
+
+                  <div
+                    key={game.id}
+                    className="bg-[#171a21] border border-white/5 rounded-xl p-4 flex justify-between items-center"
+                  >
+
+                    <div className="flex items-center gap-3">
+
+                      {game.imageUrl && (
+                        <img
+                          src={game.imageUrl}
+                          alt={game.name}
+                          className="w-20 h-12 object-cover rounded"
+                        />
+                      )}
+
+                      <div>
+
+                        <h5 className="font-bold text-white">
+                          {game.name}
+                        </h5>
+
+                        <p className="text-xs text-slate-400">
+                          u$s {parseFloat(game.price || 0).toFixed(2)}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <button
+                      onClick={() => removeFromWishlist(game.id)}
+                      className="flex items-center gap-1 px-3 py-2 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-all"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Quitar
+                    </button>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            )}
+
           </div>
         </div>
       )}
