@@ -60,16 +60,16 @@ export default function Hero({ games = [] }) {
             {/* Efecto de fondo dinámico con desenfoque basado en la imagen del juego actual */}
             <div
                 className="absolute inset-0 bg-cover bg-center opacity-30 blur-3xl transition-all duration-1000 ease-in-out scale-110"
-                style={{ backgroundImage: `url(${currentGame.image_url})` }}
+                style={{ backgroundImage: `url(${currentGame.imageUrl})` }}
             />
 
             <div className="relative h-full flex flex-col md:flex-row z-10">
 
                 {/* ÁREA VISUAL: image_url */}
                 <div className="relative w-full md:w-2/3 h-1/2 md:h-full overflow-hidden group/image">
-                    {currentGame.image_url ? (
+                    {currentGame.imageUrl ? (
                         <img
-                            src={currentGame.image_url}
+                            src={currentGame.imageUrl}
                             alt={currentGame.name}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover/image:scale-105"
                         />
@@ -124,7 +124,7 @@ export default function Hero({ games = [] }) {
                         <button className="group/btn relative px-8 py-4 bg-gradient-to-r from-[#66c0f4] to-[#417a9b] text-white font-bold rounded-sm overflow-hidden transition-all shadow-[0_0_20px_rgba(102,192,244,0.2)] hover:shadow-[0_0_25px_rgba(102,192,244,0.4)] active:scale-95">
                             <span className="relative z-10 flex items-center space-x-2">
                                 <Info size={18} />
-                                <span>VER FICHA</span>
+                                <span><a href={`/games/${currentGame.id}`}>VER FICHA</a></span>
                             </span>
                             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                         </button>

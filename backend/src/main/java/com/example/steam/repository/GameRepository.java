@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,21 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
 
     @Query("SELECT g FROM Game g LEFT JOIN FETCH g.developer WHERE g.idGame = :idGame")
     Optional<Game> findGameWithDeveloperById(@Param("idGame") Integer idGame);
-}
+
+        @Query("""
+        SELECT DISTINCT g
+        FROM Game g
+        LEFT JOIN g.categories c
+        WHERE
+            (:categoryId IS NULL OR c.idCategory = :categoryId)
+        AND
+            (:minPrice IS NULL OR g.price >= :minPrice)
+        AND
+            (:maxPrice IS NULL OR g.price <= :maxPrice)
+    """)
+        List<Game> findGamesWithFilters(
+                @Param("categoryId") Long categoryId,
+                @Param("minPrice") BigDecimal minPrice,
+                @Param("maxPrice") BigDecimal maxPrice
+        );
+    }

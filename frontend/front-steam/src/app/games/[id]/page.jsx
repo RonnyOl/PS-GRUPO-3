@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import {useAuth} from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function GameDetailPage({ params }) {
     // Desempaquetamos el ID dinámico de la URL usando use() de Next.js
@@ -33,6 +33,7 @@ export default function GameDetailPage({ params }) {
             .get(`http://localhost:8080/v1/games/${gameId}`, { withCredentials: true })
             .then((response) => {
                 setGame(response.data);
+                console.log(response.data)
                 setLoading(false);
             })
             .catch((err) => {
@@ -81,7 +82,7 @@ export default function GameDetailPage({ params }) {
             id_game: game.idGame || game.id,
             name: game.name,
             price: game.price,
-            image_url: game.imageUrl || game.image_url,
+            image_url: game.gameUrl || game.image_url,
             quantity: 1
         };
         addToCart(cartItem);
@@ -143,9 +144,9 @@ export default function GameDetailPage({ params }) {
 
                     {/* Portada en el Detalle */}
                     <div className="md:col-span-1 bg-slate-900 aspect-video md:aspect-auto relative min-h-[200px]">
-                        {game.imageUrl || game.image_url ? (
+                        {game.gameUrl || game.image_url ? (
                             <img
-                                src={game.imageUrl || game.image_url}
+                                src={game.gameUrl || game.image_url}
                                 alt={game.name}
                                 className="w-full h-full object-cover"
                             />
@@ -183,11 +184,10 @@ export default function GameDetailPage({ params }) {
                             <button
                                 onClick={handleAddAndOpen}
                                 disabled={isInCart}
-                                className={`flex items-center space-x-2 px-5 py-3 text-xs font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
-                                    isInCart
-                                        ? 'bg-emerald-950/40 text-emerald-500 border border-emerald-900/40 cursor-not-allowed'
-                                        : 'bg-[#66c0f4] hover:bg-cyan-400 text-[#171a21] shadow-lg shadow-cyan-500/10'
-                                }`}
+                                className={`flex items-center space-x-2 px-5 py-3 text-xs font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer ${isInCart
+                                    ? 'bg-emerald-950/40 text-emerald-500 border border-emerald-900/40 cursor-not-allowed'
+                                    : 'bg-[#66c0f4] hover:bg-cyan-400 text-[#171a21] shadow-lg shadow-cyan-500/10'
+                                    }`}
                             >
                                 <ShoppingBag className="w-4 h-4" />
                                 <span>{isInCart ? "En el Carrito" : "Comprar Ahora"}</span>
@@ -215,7 +215,7 @@ export default function GameDetailPage({ params }) {
                                 <DownloadCloud className="w-5 h-5" />
                             </div>
                             <div>
-                                <div className="text-xl font-black text-white">{game.installedCount || 0}</div>
+                                <div className="text-xl font-black text-white">{game.installed || 0}</div>
                                 <div className="text-[10px] text-slate-400 uppercase font-semibold tracking-wider">Jugadores lo instalaron</div>
                             </div>
                         </div>
@@ -226,7 +226,7 @@ export default function GameDetailPage({ params }) {
                                 <Heart className="w-5 h-5" />
                             </div>
                             <div>
-                                <div className="text-xl font-black text-white">{game.favoriteCount || 0}</div>
+                                <div className="text-xl font-black text-white">{game.favourite || 0}</div>
                                 <div className="text-[10px] text-slate-400 uppercase font-semibold tracking-wider">En favoritos de usuarios</div>
                             </div>
                         </div>
@@ -244,11 +244,10 @@ export default function GameDetailPage({ params }) {
 
                     {/* Alertas de Feedback de la Review */}
                     {reviewMessage.text && (
-                        <div className={`p-4 rounded-lg text-xs font-bold border ${
-                            reviewMessage.type === "success"
-                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                                : "bg-rose-500/10 border-rose-500/20 text-rose-400"
-                        }`}>
+                        <div className={`p-4 rounded-lg text-xs font-bold border ${reviewMessage.type === "success"
+                            ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+                            : "bg-rose-500/10 border-rose-500/20 text-rose-400"
+                            }`}>
                             {reviewMessage.text}
                         </div>
                     )}
@@ -319,7 +318,7 @@ export default function GameDetailPage({ params }) {
                                         </div>
                                     </div>
                                     <p className="text-xs text-slate-300 leading-relaxed font-light italic">
-                                        "{review.comment}"
+                                        &quot;{review.comment}&quot;
                                     </p>
                                     <div className="text-[10px] text-slate-500">
                                         Publicado el {new Date(review.reviewDate).toLocaleDateString()}

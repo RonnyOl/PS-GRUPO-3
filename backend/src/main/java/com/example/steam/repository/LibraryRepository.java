@@ -28,7 +28,7 @@ public interface LibraryRepository extends JpaRepository<Library, Integer> {
             "FROM Library l " +
             "WHERE l.game.idGame = :idGame")
 
-    GameCommunityStatsDto findCommunityStatsByGameId(@Param("idGame") Integer idGame);
+    GameCommunityStatsDto gfindCommunityStatsByGameId(@Param("idGame") Integer idGame);
 
     boolean existsByUser_EmailAndGame_IdGame(String email, Integer idGame);
 }
