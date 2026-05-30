@@ -124,7 +124,7 @@ export default function Hero({ games = [] }) {
                         <button className="group/btn relative px-8 py-4 bg-gradient-to-r from-[#66c0f4] to-[#417a9b] text-white font-bold rounded-sm overflow-hidden transition-all shadow-[0_0_20px_rgba(102,192,244,0.2)] hover:shadow-[0_0_25px_rgba(102,192,244,0.4)] active:scale-95">
                             <span className="relative z-10 flex items-center space-x-2">
                                 <Info size={18} />
-                                <span>VER FICHA</span>
+                                <span><a href={`/games/${currentGame.id}`}>VER FICHA</a></span>
                             </span>
                             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                         </button>

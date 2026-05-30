@@ -36,6 +36,7 @@ public class SecurityConfig {
                         // 👇 ESTA LÍNEA PERMITE QUE LOS ERRORES DE EXCEPCIONES MANTENGAN EL CORS
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/v1/games/all").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/v1/games/**").permitAll()
                         .requestMatchers("/v1/categories/**").permitAll()

@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link"; // 👈 Importamos Link para la redirección
 import {
   Search,
   User,
-  Wallet,
   Gamepad2,
   Calendar,
   Building2,
@@ -12,26 +12,24 @@ import {
   AlertCircle,
   Loader2,
   RefreshCw,
-  Library
+  Library,
+  X,
+  FileText,
+  Info,
+  MessageSquarePlus // 👈 Icono nuevo para la reseña
 } from "lucide-react";
 import axios from "axios";
 import { Heart, Trash2 } from "lucide-react";
 import { useUserInformation } from "@/hooks/useUserInformation";
 import { useEffect } from 'react';
 
-/**
- * Componente UserProfile: Visualiza la información del perfil del usuario
- * y su biblioteca personal de videojuegos comprados.
- *
- * @param {string} [initialEmail=""] - Correo de inicio de búsqueda opcional.
- */
 export default function UserProfile({ initialEmail = "" }) {
   const [emailInput, setEmailInput] = useState(initialEmail);
   const [searchEmail, setSearchEmail] = useState(initialEmail);
   const [wishlist, setWishlist] = useState([]);
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [selectedGame, setSelectedGame] = useState(null);
 
-  // Hook reactivo conectado a nuestro servicio
   const { data, loading, error, refetch } = useUserInformation(searchEmail);
 
   const handleSearchSubmit = (e) => {
@@ -172,8 +170,7 @@ export default function UserProfile({ initialEmail = "" }) {
           <div className="max-w-md mx-auto">
             <h4 className="text-white font-bold text-base">Visor de Cuentas de Vapor</h4>
             <p className="text-slate-400 text-xs mt-1">
-              Introduzca un correo electrónico en la barra superior para inspeccionar,
-              las credenciales del perfil y los títulos comprados en la biblioteca.
+              Introduzca un correo electrónico en la barra superior para inspeccionar las credenciales del perfil y los títulos comprados en la biblioteca.
             </p>
           </div>
         </div>
@@ -184,18 +181,15 @@ export default function UserProfile({ initialEmail = "" }) {
         <div className="space-y-6 animate-fade-in">
           {/* Tarjeta de Perfil */}
           <div className="relative overflow-hidden bg-[#171a21] border border-white/5 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start justify-between gap-6 shadow-2xl">
-            {/* Efecto de luz de fondo */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#66c0f4]/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 text-center md:text-left">
-              {/* Avatar Gamer */}
               <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#66c0f4] to-[#417a9b] p-[2px] shadow-lg shrink-0">
                 <div className="w-full h-full rounded-2xl bg-[#1b2838] flex items-center justify-center">
                   <User className="w-10 h-10 text-cyan-400" />
                 </div>
               </div>
 
-              {/* Datos de Texto */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-center md:justify-start space-x-2">
                   <h3 className="text-2xl font-black text-white tracking-tight">{data.userName}</h3>
@@ -232,7 +226,8 @@ export default function UserProfile({ initialEmail = "" }) {
                   return (
                     <div
                       key={game.id}
-                      className="bg-[#171a21] border border-white/5 hover:border-[#2a475e]/60 transition-all duration-300 rounded-xl p-4 flex gap-4 items-stretch group"
+                      onClick={() => setSelectedGame(game)}
+                      className="bg-[#171a21] border border-white/5 hover:border-[#66c0f4]/40 hover:bg-[#1b2838]/80 transition-all duration-300 rounded-xl p-4 flex gap-4 items-stretch group cursor-pointer hover:shadow-[0_0_20px_rgba(102,192,244,0.05)]"
                     >
                       {/* Portada del Juego */}
                       <div className="w-28 shrink-0 rounded-lg overflow-hidden bg-slate-900 relative h-20 md:h-auto min-h-[80px]">
@@ -252,11 +247,10 @@ export default function UserProfile({ initialEmail = "" }) {
                       {/* Detalles del Juego */}
                       <div className="flex-grow flex flex-col justify-between min-w-0">
                         <div className="space-y-1">
-                          <h5 className="text-white font-bold text-base truncate" title={game.name}>
+                          <h5 className="text-white font-bold text-base truncate group-hover:text-[#66c0f4] transition-colors" title={game.name}>
                             {game.name}
                           </h5>
 
-                          {/* Compañía Desarrolladora */}
                           {game.company && (
                             <div className="flex items-center space-x-1.5 text-xs text-slate-400">
                               <Building2 className="w-3.5 h-3.5 text-slate-500" />
@@ -264,7 +258,6 @@ export default function UserProfile({ initialEmail = "" }) {
                             </div>
                           )}
 
-                          {/* Categorías */}
                           {game.categories && game.categories.length > 0 && (
                             <div className="flex flex-wrap gap-1 pt-1">
                               {game.categories.map((category, index) => (
@@ -280,7 +273,6 @@ export default function UserProfile({ initialEmail = "" }) {
                           )}
                         </div>
 
-                        {/* Metadatos Inferiores */}
                         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/5 pt-2 mt-2">
                           <div className="flex items-center space-x-1 text-[10px] text-slate-500">
                             <Calendar className="w-3 h-3" />
@@ -297,80 +289,193 @@ export default function UserProfile({ initialEmail = "" }) {
               </div>
             )}
           </div>
+        </div>
+      )}
+      <div className="space-y-4 mt-8">
 
-          <div className="space-y-4 mt-8">
+        <div className="flex items-center space-x-2 pb-2 border-b border-white/5">
+          <Heart className="w-5 h-5 text-rose-400" />
+          <h4 className="font-bold text-sm uppercase tracking-widest text-white">
+            Wishlist
+          </h4>
+        </div>
 
-            <div className="flex items-center space-x-2 pb-2 border-b border-white/5">
-              <Heart className="w-5 h-5 text-rose-400" />
-              <h4 className="font-bold text-sm uppercase tracking-widest text-white">
-                Wishlist
-              </h4>
-            </div>
+        {wishlistLoading ? (
 
-            {wishlistLoading ? (
+          <div className="text-center text-slate-400 py-8">
+            Cargando wishlist...
+          </div>
 
-              <div className="text-center text-slate-400 py-8">
-                Cargando wishlist...
-              </div>
+        ) : wishlist.length === 0 ? (
 
-            ) : wishlist.length === 0 ? (
+          <div className="bg-[#171a21]/30 border border-white/5 rounded-xl p-8 text-center">
+            <p className="text-slate-400">
+              No tienes juegos en la wishlist.
+            </p>
+          </div>
 
-              <div className="bg-[#171a21]/30 border border-white/5 rounded-xl p-8 text-center">
-                <p className="text-slate-400">
-                  No tienes juegos en la wishlist.
-                </p>
-              </div>
+        ) : (
 
-            ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {wishlist.map((game) => (
 
-                {wishlist.map((game) => (
+              <div
+                key={game.id}
+                className="bg-[#171a21] border border-white/5 rounded-xl p-4 flex justify-between items-center"
+              >
 
-                  <div
-                    key={game.id}
-                    className="bg-[#171a21] border border-white/5 rounded-xl p-4 flex justify-between items-center"
-                  >
+                <div className="flex items-center gap-3">
 
-                    <div className="flex items-center gap-3">
+                  {game.imageUrl && (
+                    <img
+                      src={game.imageUrl}
+                      alt={game.name}
+                      className="w-20 h-12 object-cover rounded"
+                    />
+                  )}
 
-                      {game.imageUrl && (
-                        <img
-                          src={game.imageUrl}
-                          alt={game.name}
-                          className="w-20 h-12 object-cover rounded"
-                        />
-                      )}
+                  <div>
 
-                      <div>
+                    <h5 className="font-bold text-white">
+                      {game.name}
+                    </h5>
 
-                        <h5 className="font-bold text-white">
-                          {game.name}
-                        </h5>
-
-                        <p className="text-xs text-slate-400">
-                          u$s {parseFloat(game.price || 0).toFixed(2)}
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                    <button
-                      onClick={() => removeFromWishlist(game.id)}
-                      className="flex items-center gap-1 px-3 py-2 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-all"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Quitar
-                    </button>
+                    <p className="text-xs text-slate-400">
+                      u$s {parseFloat(game.price || 0).toFixed(2)}
+                    </p>
 
                   </div>
 
-                ))}
+                </div>
+
+                <button
+                  onClick={() => removeFromWishlist(game.id)}
+                  className="flex items-center gap-1 px-3 py-2 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-all"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Quitar
+                </button>
 
               </div>
 
-            )}
+            ))}
+
+          </div>
+
+        )}
+
+      </div>
+      {/* MODAL FLOTANTE DE DETALLE DE VIDEOJUEGO */}
+      {selectedGame && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="absolute inset-0" onClick={() => setSelectedGame(null)} />
+
+          <div className="relative w-full max-w-2xl bg-[#171a21] border border-[#2a475e]/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col text-[#c7d5e0] animate-slide-up max-h-[90vh]">
+
+            <button
+              onClick={() => setSelectedGame(null)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/40 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+              aria-label="Cerrar detalles"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="w-full h-48 md:h-64 bg-slate-900 relative shrink-0">
+              {selectedGame.imageUrl ? (
+                <img
+                  src={selectedGame.imageUrl}
+                  alt={selectedGame.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-[#1b2838]">
+                  <Gamepad2 className="w-16 h-16 text-[#2a475e]" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171a21] via-[#171a21]/40 to-transparent" />
+
+              <div className="absolute bottom-4 left-6 right-12">
+                <h3 className="text-xl md:text-3xl font-black text-white uppercase tracking-wider drop-shadow-md truncate">
+                  {selectedGame.name}
+                </h3>
+              </div>
+            </div>
+
+            <div className="p-6 overflow-y-auto space-y-5 custom-scrollbar">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 bg-[#1b2838]/60 p-3 rounded-xl border border-white/5">
+                {selectedGame.company && (
+                  <div className="flex items-center space-x-1.5">
+                    <Building2 className="w-4 h-4 text-[#66c0f4]" />
+                    <span>Desarrollador: <strong className="text-white font-medium">{selectedGame.company}</strong></span>
+                  </div>
+                )}
+                <div className="flex items-center space-x-1.5">
+                  <Calendar className="w-4 h-4 text-[#66c0f4]" />
+                  <span>Lanzamiento: <strong className="text-white font-medium">{formatDate(selectedGame.releaseDate)}</strong></span>
+                </div>
+                <div className="ml-auto">
+                  <span className={`text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-sm ${parseFloat(selectedGame.price || 0) === 0 ? 'bg-emerald-950 border border-emerald-800 text-emerald-400' : 'bg-blue-950 border border-blue-900 text-cyan-400'}`}>
+                    {parseFloat(selectedGame.price || 0) === 0 ? "Gratis" : `u$s ${parseFloat(selectedGame.price).toFixed(2)}`}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-1.5">
+                  <FileText className="w-4 h-4 text-[#66c0f4]" /> Descripción del Producto
+                </h4>
+                <p className="text-sm text-slate-400 leading-relaxed bg-[#1b2838]/20 p-4 rounded-xl border border-white/[0.02]">
+                  {selectedGame.description || "Este título corporativo no cuenta con una sinopsis o descripción detallada provista por el desarrollador."}
+                </p>
+              </div>
+
+              {selectedGame.categories && selectedGame.categories.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-1.5">
+                    <Tag className="w-4 h-4 text-[#66c0f4]" /> Etiquetas Populares
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedGame.categories.map((category, index) => (
+                      <span
+                        key={index}
+                        className="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-bold bg-[#1b2838] border border-[#2a475e]/60 text-cyan-400 uppercase tracking-wide"
+                      >
+                        <Tag className="w-3 h-3" />
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-2 text-[11px] text-slate-500 flex items-center gap-1.5 italic">
+              </div>
+            </div>
+
+            {/* 👇 MODIFICADO: Footer con botón de Reseña y botón de Cierre */}
+            <div className="p-4 bg-[#1b2838]/40 border-t border-white/5 flex items-center justify-between gap-3">
+
+              {/* Botón dinámico para ir a reseñar */}
+              <Link
+                href={`/games/${selectedGame.id_game || selectedGame.game_id || selectedGame.id}`}
+                className="px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)] flex items-center gap-2 cursor-pointer"
+              >
+                <MessageSquarePlus className="w-4 h-4" />
+                <span>Escribir Reseña</span>
+              </Link>
+
+              <button
+                onClick={() => setSelectedGame(null)}
+                className="px-5 py-2.5 bg-[#2a475e] hover:bg-[#345975] text-slate-300 hover:text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors cursor-pointer"
+              >
+                Cerrar
+              </button>
+            </div>
 
           </div>
         </div>

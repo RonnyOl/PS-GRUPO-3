@@ -3,9 +3,12 @@ package com.example.steam.controller;
 import com.example.steam.dto.GameResponse;
 import com.example.steam.dto.PublishGameRequest;
 import com.example.steam.model.User;
+import com.example.steam.model.dto.ResponseGameDetailDto;
+import com.example.steam.model.dto.ResponseGameDetailDto;
 import com.example.steam.model.dto.ResponseGameDto;
 import com.example.steam.service.GameServiceInterface;
 import com.example.steam.service.WishlistServiceInterface;
+import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +57,11 @@ public class GameController {
     @GetMapping("/search")
     public ResponseEntity<List<ResponseGameDto>> searchGames(@RequestParam String name) {
         return ResponseEntity.ok(gameService.searchGames(name));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseGameDetailDto> searchGames(@PathVariable Integer id) {
+        return ResponseEntity.ok(gameService.getGameDetail(id));
     }
 
     @PostMapping("/wishlist/add/{gameId}")

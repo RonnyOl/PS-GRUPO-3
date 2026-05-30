@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Integer> {
@@ -17,6 +18,10 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     List<String> findNamesByIdsIn(@Param("ids") List<Integer> ids);
 
     List<Game> findByNameContainingIgnoreCase(String name);
+
+    @Query("SELECT g FROM Game g LEFT JOIN FETCH g.developer WHERE g.idGame = :idGame")
+    Optional<Game> findGameWithDeveloperById(@Param("idGame") Integer idGame);
+
         @Query("""
         SELECT DISTINCT g
         FROM Game g
@@ -34,4 +39,3 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
                 @Param("maxPrice") BigDecimal maxPrice
         );
     }
-

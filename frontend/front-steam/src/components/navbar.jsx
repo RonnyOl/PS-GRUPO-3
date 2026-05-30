@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 "use client";
 
 import React from 'react';
@@ -13,14 +14,14 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 export default function Navbar({
-                                   cartCount = 0,
-                                   wishlistCount = 0,
-                                   onCartClick,
-                                   onToast
-                               }) {
+    cartCount = 0,
+    wishlistCount = 0,
+    onToast
+}) {
     const { user, loading } = useAuth();
     const pathname = usePathname();
 
+    // No renderizar en pantallas de autenticación
     if (pathname === "/login" || pathname === "/register") {
         return null;
     }
@@ -29,95 +30,82 @@ export default function Navbar({
         if (onToast) {
             onToast(message);
         } else {
-            console.log("Toast simulado:", message);
+            console.log("Notificación:", message);
         }
     };
 
-    if (loading) return <>Cargando...</>;
+    if (loading) return null;
 
     return (
-        <header className="sticky top-0 z-40 bg-[#171a21] border-b border-sky-950/40 shadow-xl backdrop-blur-md w-full">
+        <header className="sticky top-0 z-50 bg-[#171a21]/95 backdrop-blur-md border-b border-sky-500/10 shadow-2xl w-full transition-all">
             <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
 
-                <div className="flex items-center space-x-8">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2 cursor-pointer group">
-                        <div className="bg-[#2a475e] p-2 rounded-lg group-hover:bg-[#66c0f4] transition-colors duration-300">
-                            <Gamepad className="w-6 h-6 text-cyan-400 group-hover:text-slate-900 transition-colors duration-300" />
+                {/* SECCIÓN IZQUIERDA: LOGO Y NAVEGACIÓN */}
+                <div className="flex items-center space-x-10">
+                    {/* Logo Oficial STEAM */}
+                    <Link href="/" className="flex items-center space-x-3 cursor-pointer group select-none">
+                        <div className="bg-[#2a475e]/40 p-2 rounded-xl group-hover:bg-[#66c0f4] transition-all duration-300 border border-white/5 group-hover:border-transparent shadow-inner">
+                            <Gamepad className="w-6 h-6 text-cyan-400 group-hover:text-[#171a21] transition-colors duration-300" />
                         </div>
-                        <div>
-                            <span className="font-extrabold tracking-wider text-xl text-white uppercase group-hover:text-cyan-400 transition-colors">STEAM</span>
-                            <span className="text-xs block text-[#66c0f4] -mt-1 font-semibold tracking-widest">FACULTAD</span>
+                        <div className="flex flex-col">
+                            <span className="font-black tracking-widest text-2xl text-white uppercase bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text">
+                                <a href="/">STEAM</a>
+                            </span>
                         </div>
                     </Link>
 
-                    {/* Enlaces de navegación tipo Steam */}
-                    <nav className="hidden lg:flex space-x-6 text-sm font-semibold tracking-wide text-[#b8b6b4]">
-                        <Link href="/tienda" className="text-white border-b-2 border-[#66c0f4] pb-1">TIENDA</Link>
-                        <a
-                            href="#comunidad"
-                            className="hover:text-white transition-colors"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleToast("Módulo de comunidad: disponible en el sprint 2");
-                            }}
+                    {/* Enlaces de Navegación del Ecosistema */}
+                    <nav className="hidden lg:flex items-center space-x-8 text-xs font-bold tracking-widest text-[#b8b6b4]">
+                        <Link
+                            href="/shopping"
+                            className={`transition-colors uppercase pb-1 border-b-2 ${pathname === '/tienda' || pathname === '/'
+                                ? 'text-white border-cyan-400'
+                                : 'border-transparent hover:text-white hover:border-slate-500'
+                                }`}
                         >
-                            COMUNIDAD
-                        </a>
-                        <a
-                            href="#soporte"
-                            className="hover:text-white transition-colors"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleToast("Módulo de soporte: disponible en el sprint 3");
-                            }}
+                            TIENDA
+                        </Link>
+
+                        <Link
+                            href={user ? '/user/profile' : '/login'}
+                            className={`transition-colors uppercase pb-1 border-b-2 ${pathname === '/user/profile'
+                                ? 'text-white border-cyan-400'
+                                : 'border-transparent hover:text-white hover:border-slate-500'
+                                }`}
                         >
-                            SOPORTE
-                        </a>
+                            Libreria
+                        </Link>
+
+
+
                         {user?.role === 'ROLE_DEVELOPER' && (
-                            <Link href="/publish" className="hover:text-white transition-colors">
+                            <Link
+                                href="/publish"
+                                className={`transition-colors uppercase pb-1 border-b-2 ${pathname === '/publish'
+                                    ? 'text-white border-cyan-400'
+                                    : 'border-transparent hover:text-white hover:border-slate-500'
+                                    }`}
+                            >
                                 PUBLICAR
                             </Link>
                         )}
                     </nav>
                 </div>
 
+                {/* SECCIÓN DERECHA: ACCIONES / PERFIL */}
                 <div className="flex items-center space-x-4">
-                    {/* Lista de deseos */}
-                    <div
-                        onClick={() => handleToast(`Lista de deseos: ${wishlistCount} artículos`)}
-                        className="relative group hidden sm:flex items-center text-sm space-x-1 hover:text-white cursor-pointer select-none"
-                    >
-                        <Heart className={`w-5 h-5 transition-colors duration-200 ${wishlistCount > 0 ? 'text-red-500 fill-red-500' : 'text-slate-400 group-hover:text-red-500'}`} />
-                        <span className="text-xs bg-slate-800 px-2 py-0.5 rounded-full text-slate-300 group-hover:bg-[#2a475e] transition-colors">
-                            {wishlistCount}
-                        </span>
-                    </div>
 
-                    {/* Botón del Carrito */}
+                    <div className="h-5 w-[1px] bg-slate-800 hidden sm:block"></div>
 
-                    <Link
-                        href="/shopping"
-                        className="relative p-2 rounded-lg bg-[#2a475e]/80 hover:bg-[#2a475e] text-white flex items-center space-x-2 group border border-transparent hover:border-cyan-500/30 transition-all shadow-md active:scale-95 cursor-pointer"
-                        aria-label="Ver mi carrito de compras"
-                    >
-                        <ShoppingCart className="w-5 h-5 text-cyan-400 group-hover:animate-bounce" />
-                        <span className="font-bold text-xs bg-cyan-500 text-[#171a21] px-1.5 py-0.5 rounded-full">
-                            {cartCount}
-                        </span>
-                    </Link>
-
-                    <div className="h-6 w-[1px] bg-slate-700/60 hidden sm:block"></div>
-
-                    {/* 👈 Sección Dinámica del Perfil Modificada */}
+                    {/* Autenticación / Perfil Dinámico */}
                     {user ? (
                         <Link
                             href="/user/profile"
-                            className="flex items-center space-x-2 group cursor-pointer select-none"
+                            className="flex items-center space-x-2.5 group cursor-pointer select-none bg-slate-800/20 hover:bg-slate-800/50 pl-2 pr-3 py-1 rounded-xl border border-white/5 transition-all"
                         >
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 p-[2px] group-hover:shadow-cyan-500/30 group-hover:shadow-lg transition-all">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 p-[1.5px] group-hover:shadow-cyan-500/20 group-hover:shadow-lg transition-all">
                                 <div className="w-full h-full rounded-full bg-[#171a21] flex items-center justify-center">
-                                    <User className="w-4 h-4 text-cyan-400 group-hover:text-white transition-colors" />
+                                    <User className="w-3.5 h-3.5 text-cyan-400 group-hover:text-white transition-colors" />
                                 </div>
                             </div>
                             <span className="hidden md:inline text-xs font-bold text-slate-300 group-hover:text-white transition-colors">
@@ -126,13 +114,12 @@ export default function Navbar({
                         </Link>
                     ) : (
                         <div className="flex items-center space-x-2">
-                            <div className="w-9 h-9 rounded-full bg-slate-800 p-[2px]">
-                                <div className="w-full h-full rounded-full bg-[#171a21] flex items-center justify-center">
-                                    <User className="w-4 h-4 text-slate-500" />
-                                </div>
-                            </div>
-                            <Link href="/login" className="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1">
-                                <LogIn className="w-3 h-3" /> Iniciar Sesión
+                            <Link
+                                href="/login"
+                                className="text-xs font-bold text-cyan-400 hover:text-cyan-300 bg-cyan-500/5 hover:bg-cyan-500/10 px-3 py-2 rounded-xl border border-cyan-500/20 flex items-center gap-1.5 transition-all active:scale-95"
+                            >
+                                <LogIn className="w-3.5 h-3.5" />
+                                <span>Iniciar Sesión</span>
                             </Link>
                         </div>
                     )}
